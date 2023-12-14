@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            position: relative; /* Добавлено свойство position */
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        header img {
+            height: 30px; /* Высота вашего логотипа */
+            margin-right: 10px;
+        }
+
+        main {
+            display: flex;
+            min-height: calc(100vh - 60px); /* Высота экрана минус высота header */
+        }
+
+        .left-column {
+            width: 30%; /* Ширина левой колонки */
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .left-column h2 {
+            margin-bottom: 10px;
+        }
+
+        .left-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .left-column li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .right-column {
+            flex: 1; /* Занимает все доступное пространство в правой колонке */
+            padding: 20px;
+            text-align: center;
+        }
+
+        .right-column h2 {
+            margin-bottom: 10px;
+        }
+
+        .right-column h3 {
+            margin-bottom: 20px;
+        }
+
+        .right-column img {
+            max-width: 100%; /* Делаем изображение адаптивным */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    <title>Лабораторная работа №4</title>
+</head>
+<body>
+
+    <header>
+        <a href="{% url 'index_page' %}">
+            <img src="https://klike.net/uploads/posts/2022-10/1666852935_3-56.jpg" alt="logo">
+        </a>
+
+        <h1>Лабораторная работа №4</h1>
+    </header>
+
+    <main>
+        <div class="left-column">
+            <h2>Выберите таблицу</h2>
+            <ul>
+                <li><a href="{% url 'area_list' %}">Области</a></li>
+                <li><a href="https://www.google.com">Населенные пункты</a></li>
+                <li><a href="https://www.google.com">Районы</a></li>
+                <li><a href="https://www.google.com">Улицы</a></li>
+                <li><a href="https://www.google.com">Дома</a></li>
+                <li><a href="https://www.google.com">Квартиры</a></li>
+                <li><a href="https://www.google.com">Жильцы</a></li>
+            </ul>
+            <!-- Добавьте поисковые поля, если необходимо -->
+        </div>
+
+        <div class="right-column">
+        <h2>Таблица областей</h2>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название области</th>
+                    <th>Код региона</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for area in areas %}
+                    <tr>
+                        <td>{{ area.id_area }}</td>
+                        <td>{{ area.name_area }}</td>
+                        <td>{{ area.subject_code }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>by Прощенко Алексей и Фридрих Александр</p>
+    </footer>
+
+</body>
+</html>
