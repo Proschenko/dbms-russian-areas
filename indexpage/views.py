@@ -58,7 +58,6 @@ def delete_area(request, id_area):
         if delete_type_form.is_valid():
             delete_type = delete_type_form.cleaned_data['delete_type']
             if delete_type == 'CASCADE':
-                area_name = area.name_area  # Получаем название элемента
                 area.delete()
                 return redirect('area_list')
 
@@ -78,7 +77,7 @@ def delete_area(request, id_area):
     context = {
         'delete_type_form': delete_type_form,
         'area_id': id_area,
-        'area_name': area.name_area  # Передаем название элемента в контекст
+        'area_name': area.name_area
     }
     return render(request, 'indexpage/delete_area.html', context)
 

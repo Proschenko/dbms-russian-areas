@@ -261,19 +261,20 @@
             var inputName = document.getElementById('search_name_area').value.toUpperCase();
             var inputCode = document.getElementById('search_code_area').value.toUpperCase();
             var table = document.getElementById('areaTable');
-            var rows = table.getElementsByTagName('tr');
+            var rows = table.getElementsByClassName('table-row');
 
             for (var i = 0; i < rows.length; i++) {
                 var nameCol = rows[i].getElementsByTagName('td')[0];
                 var codeCol = rows[i].getElementsByTagName('td')[1];
 
-                if (nameCol && codeCol) {
+                if (rows[i].classList.contains('table-row') && nameCol && codeCol) {
                     var nameValue = nameCol.textContent || nameCol.innerText;
                     var codeValue = codeCol.textContent || codeCol.innerText;
 
+                    // Проверка на пустые значения
                     if (
-                        nameValue.toUpperCase().indexOf(inputName) > -1 &&
-                        codeValue.toUpperCase() === inputCode
+                        (inputName === '' || nameValue.toUpperCase().indexOf(inputName) > -1) &&
+                        (inputCode === '' || codeValue.toUpperCase() === inputCode)
                     ) {
                         rows[i].style.display = '';
                     } else {
