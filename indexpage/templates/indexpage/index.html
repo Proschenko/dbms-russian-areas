@@ -29,7 +29,7 @@
         }
 
         .left-column {
-            width: 30%; /* Ширина левой колонки */
+            width: 20%; /* Ширина левой колонки */
             padding: 20px;
             background-color: #f4f4f4;
         }
@@ -108,16 +108,17 @@
     <main>
         <div class="left-column">
             <h2>Выберите таблицу</h2>
+            <!-- исправить ссылки на верные после их создания -->
             <ul>
                 <li><a href="{% url 'area_list' %}">Области</a></li>
-                <li><a href="https://www.google.com">Населенные пункты</a></li>
-                <li><a href="https://www.google.com">Районы</a></li>
-                <li><a href="https://www.google.com">Улицы</a></li>
-                <li><a href="https://www.google.com">Дома</a></li>
-                <li><a href="https://www.google.com">Квартиры</a></li>
-                <li><a href="https://www.google.com">Жильцы</a></li>
+                <li><a href="{% url 'area_list' %}">Населенные пункты</a></li>
+                <li><a href="{% url 'area_list' %}">Районы</a></li>
+                <li><a href="{% url 'area_list' %}">Улицы</a></li>
+                <li><a href="{% url 'area_list' %}">Дома</a></li>
+                <li><a href="{% url 'area_list' %}">Квартиры</a></li>
+                <li><a href="{% url 'area_list' %}">Жильцы</a></li>
+
             </ul>
-            <!-- Добавьте поисковые поля, если необходимо -->
         </div>
 
         <div class="right-column">

@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            position: relative; /* Добавлено свойство position */
+            position: relative;
         }
 
         header {
@@ -20,19 +20,22 @@
         }
 
         header img {
-            height: 30px; /* Высота вашего логотипа */
+            height: 30px;
             margin-right: 10px;
         }
 
         main {
             display: flex;
-            min-height: calc(100vh - 60px); /* Высота экрана минус высота header */
+            min-height: calc(100vh - 60px);
+            margin-bottom: 40px; /* Высота футтера + дополнительный отступ */
         }
 
         .left-column {
-            width: 30%; /* Ширина левой колонки */
+            width: 20%;
             padding: 20px;
             background-color: #f4f4f4;
+            position: fixed; /* Добавлено свойство position */
+            height: 100%; /* Задайте высоту 100% */
         }
 
         .left-column h2 {
@@ -49,11 +52,49 @@
             text-decoration: none;
             color: #333;
         }
+        @media (max-width: 768px) {
+            .left-column {
+                width: 100%;
+            }
+
+            .left-column ul {
+                text-align: center;
+            }
+
+            .left-column li {
+                display: block;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Цвет фона кнопок */
+        .left-column a.btn {
+            background-color: #333;  /* Цвет шапки и футтера, замените при необходимости */
+            color: #fff;  /* Цвет текста на кнопке, выберите подходящий */
+        }
+
+        /* Изменение цвета фона при наведении */
+        .left-column a.btn:hover {
+            background-color: #444;  /* Цвет при наведении, замените при необходимости */
+        }
+
+        /* Стилизация кнопки "Применить фильтры" */
+        button.btn.btn-primary {
+            background-color: #333;  /* Цвет шапки и футтера, замените при необходимости */
+            color: #fff;  /* Цвет текста на кнопке, выберите подходящий */
+            transition: background-color 0.3s;  /* Плавное изменение цвета при наведении */
+        }
+
+        /* Изменение цвета фона при наведении */
+        button.btn.btn-primary:hover {
+            background-color: #444;  /* Цвет при наведении, замените при необходимости */
+        }
 
         .right-column {
-            flex: 1; /* Занимает все доступное пространство в правой колонке */
+            flex: 1;
             padding: 20px;
             text-align: center;
+            margin-left: 20%; /* Учтите ширину левого столбца */
         }
 
         .right-column h2 {
@@ -65,7 +106,7 @@
         }
 
         .right-column img {
-            max-width: 100%; /* Делаем изображение адаптивным */
+            max-width: 100%;
         }
 
         table {
@@ -73,6 +114,13 @@
             border-collapse: collapse;
             margin-top: 20px;
         }
+
+        /* Добавленные стили для выделения строки при наведении */
+        .table-row:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+
 
         th, td {
             border: 1px solid #ddd;
@@ -109,41 +157,161 @@
     <main>
         <div class="left-column">
             <h2>Выберите таблицу</h2>
+            <!-- исправить ссылки на верные после их создания -->
             <ul>
                 <li><a href="{% url 'area_list' %}">Области</a></li>
-                <li><a href="https://www.google.com">Населенные пункты</a></li>
-                <li><a href="https://www.google.com">Районы</a></li>
-                <li><a href="https://www.google.com">Улицы</a></li>
-                <li><a href="https://www.google.com">Дома</a></li>
-                <li><a href="https://www.google.com">Квартиры</a></li>
-                <li><a href="https://www.google.com">Жильцы</a></li>
+                <li><a href="{% url 'area_list' %}">Населенные пункты</a></li>
+                <li><a href="{% url 'area_list' %}">Районы</a></li>
+                <li><a href="{% url 'area_list' %}">Улицы</a></li>
+                <li><a href="{% url 'area_list' %}">Дома</a></li>
+                <li><a href="{% url 'area_list' %}">Квартиры</a></li>
+                <li><a href="{% url 'area_list' %}">Жильцы</a></li>
+
+
+                <li style="margin-top: 150px;"><a href="{% url 'create_area' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+
+                <!-- Поисковые поля -->
+                <form style="margin-top: 15px;" method="get" action="{% url 'area_list' %}">
+                    <input type="text" id="search_name_area" name="search_name_area" placeholder="Поиск по названию">
+                    <input type="text" id="search_code_area" name="search_code_area" placeholder="Поиск по коду региона">
+                    <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterAreaTable()">Применить фильтры</button>
+                </form>
+
+                <!-- Стилизованная кнопка "Сформировать отчет" с использованием Bootstrap  -->
+                <li style="margin-top: 15px;">
+                    <a href="{% url 'area_list' %}" class="btn btn-success">Сформировать отчет</a>
+                </li>
             </ul>
+
             <!-- Добавьте поисковые поля, если необходимо -->
         </div>
 
         <div class="right-column">
-        <h2>Таблица областей</h2>
+            <h2>Таблица областей</h2>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Название области</th>
-                    <th>Код региона</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for area in areas %}
+            <table id="areaTable" class="table">
+                <thead>
                     <tr>
-                        <td>{{ area.id_area }}</td>
+                        <th onclick="sortTable(0)">Название области</th>
+                        <th onclick="sortTable(1)">Код региона</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for area in areas %}
+                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ area.id_area }}">
                         <td>{{ area.name_area }}</td>
                         <td>{{ area.subject_code }}</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+
     </main>
+    <div>\<br></div>
+
+
+    <!-- Модальное окно для действий -->
+    <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="actionModalLabel">Выберите действие</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Выберите, что вы хотите сделать с этим элементом:</p>
+                    <button id="editBtn" class="btn btn-primary">Редактировать</button>
+                    <button id="deleteBtn" class="btn btn-danger">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function sortTable(columnIndex) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("areaTable");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function filterAreaTable() {
+            console.log("Filtering table...")
+            var inputName = document.getElementById('search_name_area').value.toUpperCase();
+            var inputCode = document.getElementById('search_code_area').value.toUpperCase();
+            var table = document.getElementById('areaTable');
+            var rows = table.getElementsByTagName('tr');
+
+            for (var i = 0; i < rows.length; i++) {
+                var nameCol = rows[i].getElementsByTagName('td')[0];
+                var codeCol = rows[i].getElementsByTagName('td')[1];
+
+                if (nameCol && codeCol) {
+                    var nameValue = nameCol.textContent || nameCol.innerText;
+                    var codeValue = codeCol.textContent || codeCol.innerText;
+
+                    if (
+                        nameValue.toUpperCase().indexOf(inputName) > -1 &&
+                        codeValue.toUpperCase() === inputCode
+                    ) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Подключение jQuery и Popper.js  -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <!-- Подключение Bootstrap JS  -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Обработчик нажатия на строку таблицы
+            $('table tbody tr.table-row').on('click', function () {
+                const areaId = $(this).data('id');
+                $('#actionModal').data('id', areaId);
+            });
+
+            // Обработчик нажатия на кнопку "Редактировать"
+            $('#editBtn').on('click', function () {
+                const areaId = $('#actionModal').data('id');
+                window.location.href = `{% url 'edit_area' 0 %}`.replace('0', areaId);
+            });
+
+            // Обработчик нажатия на кнопку "Удалить"
+            $('#deleteBtn').on('click', function () {
+                const areaId = $('#actionModal').data('id');
+                window.location.href = `{% url 'delete_area' 0 %}`.replace('0', areaId);
+            });
+        });
+    </script>
+
 
     <footer>
         <p>by Прощенко Алексей и Фридрих Александр</p>

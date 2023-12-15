@@ -19,14 +19,11 @@ from .forms import AreaForm, CityForm, DistrictForm, StreetForm, ResidentialBuil
 def index_page(request):
     return render(request, 'indexpage/index.html')
 def table_area(request):
-    area = Area.objects.all().order_by('id_area')
+    areas = Area.objects.all().order_by('id_area')
     context = {
-        'area': area,
-
+        'areas': areas,
     }
     return render(request, 'indexpage/table_area.html', context)
-
-
 
 def create_area(request):
     if request.method == 'POST':
@@ -34,30 +31,28 @@ def create_area(request):
         if form.is_valid():
             form.save()
 
-            return redirect(table_area)  # Замените 'your_view_name' на имя вашего представления
+            return redirect(table_area)
     else:
         form = AreaForm()
-    # TODO поменяй index.html
-    return render(request, 'indexpage/index.html', {'form': form})
+    return render(request, 'indexpage/create_area.html', {'form': form})
 
-def edit_area(request,area_id):
-    area = get_object_or_404(Area, pk=area_id)
+def edit_area(request, id_area):
+    area = get_object_or_404(Area, pk=id_area)
 
     if request.method == 'POST':
         form = AreaForm(request.POST, instance=area)
         if form.is_valid():
             form.save()
             my_signal.send(sender=area, request=request)
-            return redirect(table_area)  # Замените 'your_view_name' на имя вашего представления
+            return redirect(table_area)
     else:
         form = AreaForm(instance=area)
-    # TODO поменяй index.html
-    return render(request, 'indexpage/index.html', {'form': form, 'area': area})
+    return render(request, 'indexpage/edit_area.html', {'form': form, 'area': area})
 
 
 
-def delete_area(request, area_id):
-    area = get_object_or_404(Area, pk=area_id)
+def delete_area(request, id_area):
+    area = get_object_or_404(Area, pk=id_area)
     if request.method == 'POST':
         delete_type_form = DeleteTypeForm(request.POST)
         if delete_type_form.is_valid():
@@ -68,19 +63,19 @@ def delete_area(request, area_id):
 
             else:
                 # Ваш запрос SQL
-                delete_sport_type_sql = f"DELETE FROM indexpage_area WHERE area_id = {area_id}"
+                delete_sport_type_sql = f"DELETE FROM indexpage_area WHERE id_area = {id_area}"
 
                 # Выполнение запроса
                 with connection.cursor() as cursor:
                     cursor.execute(delete_sport_type_sql)
 
-                return redirect(table_area())
+                return redirect(table_area)
 
     else:
         delete_type_form = DeleteTypeForm()
-    # TODO поменяй index.html
-    return render(request, 'indexpage/index.html',
-                  {'delete_type_form': delete_type_form, 'area_id': area_id})
+    return render(request, 'indexpage/delete_area.html',
+                  {'delete_type_form': delete_type_form, 'area_id': id_area})
+
 
 
 
