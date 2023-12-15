@@ -12,13 +12,9 @@
         }
 
         h1 {
-            color: #c62828;
             text-align: center;
         }
-h2 {
 
-            text-align: center;
-        }
         form {
             max-width: 400px;
             margin: 20px auto;
@@ -32,9 +28,12 @@ h2 {
             color: #c62828;
             font-size: 18px;
             margin-bottom: 20px;
+            text-align: center;
         }
 
         button {
+            display: block;
+            margin: 0 auto;
             background-color: #c62828;
             color: #fff;
             border: none;
@@ -68,17 +67,19 @@ h2 {
         .delete-type-radio {
             margin-right: 5px;
         }
+        label {
+            color: black;
+        }
     </style>
 </head>
 <body>
-<h2>Подтверждение удаления</h2>
 <form method="post" action="{% url 'delete_area' area_id %}">
     {% csrf_token %}
-    <h1>Вы уверены, что хотите удалить?</h1>
+    <h1>Вы уверены, что хотите удалить элемент "{{area_name}}"?</h1>
 
     {{ delete_type_form.as_p }}
 
-    <button type="submit">Да, удалить</button>
+    <button type="submit">Удалить</button>
     <a href="{% url 'area_list' %}">Отмена</a>
 </form>
 </body>

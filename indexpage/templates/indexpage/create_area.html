@@ -23,19 +23,23 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         button {
-            background-color: #007bff;
+            background-color: #333;
             color: #fff;
             border: none;
             padding: 10px 15px;
             cursor: pointer;
             border-radius: 4px;
+            margin-top: 10px;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #444;
         }
 
         a {
@@ -49,20 +53,22 @@
         a:hover {
             text-decoration: underline;
         }
+
         form textarea {
-    width: 100%;
-    resize: vertical; /* Разрешить вертикальное изменение размера */
-    max-height: 20px; /* Установить максимальную высоту */
-}
+            width: 100%;
+            resize: vertical;
+            max-height: 20px;
+        }
     </style>
 </head>
 <body>
 <form method="post" action="">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Создать</button>
+    <h1>Создать область</h1>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Создать</button>
+    <a href="{% url 'area_list' %}">Отменить</a>
 </form>
-  <a href="{% url 'area_list' %}">отменить</a>
 
 </body>
 </html>

@@ -58,23 +58,29 @@ def delete_area(request, id_area):
         if delete_type_form.is_valid():
             delete_type = delete_type_form.cleaned_data['delete_type']
             if delete_type == 'CASCADE':
+                area_name = area.name_area  # Получаем название элемента
                 area.delete()
-                return redirect(table_area)
+                return redirect('area_list')
 
             else:
                 # Ваш запрос SQL
-                delete_sport_type_sql = f"DELETE FROM indexpage_area WHERE id_area = {id_area}"
+                delete_area_sql = f"DELETE FROM indexpage_area WHERE id_area = {id_area}"
 
                 # Выполнение запроса
                 with connection.cursor() as cursor:
-                    cursor.execute(delete_sport_type_sql)
+                    cursor.execute(delete_area_sql)
 
-                return redirect(table_area)
+                return redirect('area_list')
 
     else:
         delete_type_form = DeleteTypeForm()
-    return render(request, 'indexpage/delete_area.html',
-                  {'delete_type_form': delete_type_form, 'area_id': id_area})
+
+    context = {
+        'delete_type_form': delete_type_form,
+        'area_id': id_area,
+        'area_name': area.name_area  # Передаем название элемента в контекст
+    }
+    return render(request, 'indexpage/delete_area.html', context)
 
 
 
