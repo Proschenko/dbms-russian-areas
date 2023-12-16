@@ -38,4 +38,11 @@ urlpatterns = [
     path('edit_residentialbuilding/<int:id_residential_building>/', views.edit_residentialbuilding, name='edit_residentialbuilding'),
     path('delete_residentialbuilding/<int:id_residential_building>/', views.delete_residentialbuilding, name='delete_residentialbuilding'),
     # endregion
+
+    # region Apartment
+    path('apartment_list/', views.table_apartment, name='apartment_list'),
+    path('create_apartment/', views.create_apartment, name='create_apartment'),
+    path('edit_apartment/<int:id_apartment>/', views.edit_apartment, name='edit_apartment'),
+    path('delete_apartment/<int:id_apartment>/', views.delete_apartment, name='delete_apartment'),
+    # endregion
 ]

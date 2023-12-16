@@ -316,6 +316,64 @@ def delete_residentialbuilding(request, id_residential_building):
     }
     return render(request, 'indexpage/delete_residentialbuilding.html', context)
 # endregion
+# region Apartment
+def table_apartment(request):
+    apartments = Apartment.objects.all().order_by('id_apartment')
+    context = {
+        'apartments': apartments,
+    }
+    return render(request, 'indexpage/table_apartment.html', context)
+
+def create_apartment(request):
+    if request.method == 'POST':
+        form = ApartmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(table_apartment)
+    else:
+        form = ApartmentForm()
+    return render(request, 'indexpage/create_apartment.html', {'form': form})
+
+def edit_apartment(request, id_apartment):
+    apartment = get_object_or_404(Apartment, pk=id_apartment)
+
+    if request.method == 'POST':
+        form = ApartmentForm(request.POST, instance=apartment)
+        if form.is_valid():
+            form.save()
+            return redirect(table_apartment)
+    else:
+        form = ApartmentForm(instance=apartment)
+    return render(request, 'indexpage/edit_apartment.html', {'form': form, 'apartment': apartment})
+
+def delete_apartment(request, id_apartment):
+    apartment = get_object_or_404(Apartment, pk=id_apartment)
+    if request.method == 'POST':
+        delete_type_form = DeleteTypeForm(request.POST)
+        if delete_type_form.is_valid():
+            delete_type = delete_type_form.cleaned_data['delete_type']
+            if delete_type == 'CASCADE':
+                apartment.delete()
+                return redirect('apartment_list')
+            else:
+                # Ваш запрос SQL
+                delete_apartment_sql = f"DELETE FROM indexpage_apartment WHERE id_apartment = {id_apartment}"
+
+                # Выполнение запроса
+                with connection.cursor() as cursor:
+                    cursor.execute(delete_apartment_sql)
+
+                return redirect('apartment_list')
+    else:
+        delete_type_form = DeleteTypeForm()
+
+    context = {
+        'delete_type_form': delete_type_form,
+        'apartment_id': id_apartment,
+        'apartment_info': f"Apartment Number: {apartment.apartment_number}, Building: {apartment.residential_building.house_number}, Street: {apartment.residential_building.street.name_street}, District: {apartment.residential_building.street.district.name_district}, City: {apartment.residential_building.street.district.city.name_city}"
+    }
+    return render(request, 'indexpage/delete_apartment.html', context)
+# endregion
 
 
 

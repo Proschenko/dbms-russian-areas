@@ -27,7 +27,7 @@
         main {
             display: flex;
             min-height: calc(100vh - 60px);
-            margin-bottom: 40px; /* Высота футтера + дополнительный отступ */
+            margin-bottom: 40px;
         }
 
         .left-column {
@@ -67,34 +67,30 @@
             }
         }
 
-
         .left-column a.btn {
             background-color: #333;
             color: #fff;
         }
 
-        /* Изменение цвета фона при наведении */
         .left-column a.btn:hover {
             background-color: #444;
         }
 
-        /* Стилизация кнопки "Применить фильтры" */
         button.btn.btn-primary {
-            background-color: #333;  /* Цвет шапки и футтера, замените при необходимости */
-            color: #fff;  /* Цвет текста на кнопке, выберите подходящий */
-            transition: background-color 0.3s;  /* Плавное изменение цвета при наведении */
+            background-color: #333;
+            color: #fff;
+            transition: background-color 0.3s;
         }
 
-        /* Изменение цвета фона при наведении */
         button.btn.btn-primary:hover {
-            background-color: #444;  /* Цвет при наведении, замените при необходимости */
+            background-color: #444;
         }
 
         .right-column {
             flex: 1;
             padding: 20px;
             text-align: center;
-            margin-left: 20%; /* Учтите ширину левого столбца */
+            margin-left: 20%;
         }
 
         .right-column h2 {
@@ -115,12 +111,10 @@
             margin-top: 20px;
         }
 
-        /* Добавленные стили для выделения строки при наведении */
         .table-row:hover {
             background-color: #f5f5f5;
             cursor: pointer;
         }
-
 
         th, td {
             border: 1px solid #ddd;
@@ -157,7 +151,6 @@
     <main>
         <div class="left-column">
             <h2>Выберите таблицу</h2>
-            <!-- исправить ссылки на верные после их создания -->
             <ul>
                 <li><a href="{% url 'area_list' %}">Области</a></li>
                 <li><a href="{% url 'city_list' %}">Населенные пункты</a></li>
@@ -167,53 +160,47 @@
                 <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
                 <li><a href="{% url 'area_list' %}">Жильцы</a></li>
 
-
-                <li style="margin-top: 150px;"><a href="{% url 'create_area' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
-
-                <!-- Поисковые поля -->
-                <form style="margin-top: 15px;" method="get" action="{% url 'area_list' %}">
-                    <input type="text" id="search_name_area" name="search_name_area" placeholder="Поиск по названию">
-                    <input type="text" id="search_code_area" name="search_code_area" placeholder="Поиск по коду региона">
-                    <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterAreaTable()">Применить фильтры</button>
+                <li style="margin-top: 150px;"><a href="{% url 'create_apartment' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+                <form style="margin-top: 15px;" method="get" action="{% url 'apartment_list' %}">
+                    <input type="text" id="search_apartment_number" name="search_apartment_number" placeholder="Поиск по номеру квартиры">
+                    <input type="text" id="search_num_of_rooms" name="search_num_of_rooms" placeholder="Поиск по количеству комнат">
+                    <input type="text" id="search_area" name="search_area" placeholder="Поиск по площади">
+                    <input type="text" id="search_residential_building" name="search_residential_building" placeholder="Поиск по дому">
+                    <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterApartmentTable()">Применить фильтры</button>
                 </form>
 
-                <!-- Стилизованная кнопка "Сформировать отчет" с использованием Bootstrap  -->
-                <li style="margin-top: 15px;">
-                    <a href="{% url 'area_list' %}" class="btn btn-success">Сформировать отчет</a>
-                </li>
+                <li style="margin-top: 15px;"><a href="{% url 'apartment_list' %}" class="btn btn-success">Сформировать отчет</a></li>
             </ul>
-
-            <!-- Добавьте поисковые поля, если необходимо -->
         </div>
 
         <div class="right-column">
-            <h2>Таблица областей</h2>
+            <h2>Таблица квартир</h2>
 
-            <table id="areaTable" class="table">
+            <table id="apartmentTable" class="table">
                 <thead>
                     <tr>
-                        <th onclick="sortTable(0)">Название области</th>
-                        <th onclick="sortTable(1)">Код региона</th>
+                        <th onclick="sortTable(0)">Номер квартиры</th>
+                        <th onclick="sortTable(1)">Количество комнат</th>
+                        <th onclick="sortTable(2)">Площадь</th>
+                        <th onclick="sortTable(3)">Дом</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for area in areas %}
-                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ area.id_area }}">
-                        <td>{{ area.name_area }}</td>
-                        <td>{{ area.subject_code }}</td>
+                    {% for apartment in apartments %}
+                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ apartment.id_apartment }}">
+                        <td>{{ apartment.apartment_number }}</td>
+                        <td>{{ apartment.num_of_rooms }}</td>
+                        <td>{{ apartment.area }}</td>
+                        <td>{{ apartment.residential_building }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-
     </main>
     <div>\<br></div>
 
-
-    <!-- Модальное окно для действий -->
-    <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel"
-         aria-hidden="true">
+    <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -231,11 +218,10 @@
         </div>
     </div>
 
-
     <script>
         function sortTable(columnIndex) {
             var table, rows, switching, i, x, y, shouldSwitch;
-            table = document.getElementById("areaTable");
+            table = document.getElementById("apartmentTable");
             switching = true;
             while (switching) {
                 switching = false;
@@ -256,25 +242,32 @@
             }
         }
 
-        function filterAreaTable() {
-            console.log("Filtering table...")
-            var inputName = document.getElementById('search_name_area').value.toUpperCase();
-            var inputCode = document.getElementById('search_code_area').value.toUpperCase();
-            var table = document.getElementById('areaTable');
+        function filterApartmentTable() {
+            console.log("Filtering table...");
+            var inputApartmentNumber = document.getElementById('search_apartment_number').value.toUpperCase();
+            var inputNumOfRooms = document.getElementById('search_num_of_rooms').value.toUpperCase();
+            var inputArea = document.getElementById('search_area').value.toUpperCase();
+            var inputResidentialBuilding = document.getElementById('search_residential_building').value.toUpperCase();
+            var table = document.getElementById('apartmentTable');
             var rows = table.getElementsByClassName('table-row');
 
             for (var i = 0; i < rows.length; i++) {
-                var nameCol = rows[i].getElementsByTagName('td')[0];
-                var codeCol = rows[i].getElementsByTagName('td')[1];
+                var apartmentNumberCol = rows[i].getElementsByTagName('td')[0];
+                var numOfRoomsCol = rows[i].getElementsByTagName('td')[1];
+                var areaCol = rows[i].getElementsByTagName('td')[2];
+                var residentialBuildingCol = rows[i].getElementsByTagName('td')[3];
 
-                if (rows[i].classList.contains('table-row') && nameCol && codeCol) {
-                    var nameValue = nameCol.textContent || nameCol.innerText;
-                    var codeValue = codeCol.textContent || codeCol.innerText;
+                if (rows[i].classList.contains('table-row') && apartmentNumberCol && numOfRoomsCol && areaCol && residentialBuildingCol) {
+                    var apartmentNumberValue = apartmentNumberCol.textContent || apartmentNumberCol.innerText;
+                    var numOfRoomsValue = numOfRoomsCol.textContent || numOfRoomsCol.innerText;
+                    var areaValue = areaCol.textContent || areaCol.innerText;
+                    var residentialBuildingValue = residentialBuildingCol.textContent || residentialBuildingCol.innerText;
 
-                    // Проверка на пустые значения
                     if (
-                        (inputName === '' || nameValue.toUpperCase().indexOf(inputName) > -1) &&
-                        (inputCode === '' || codeValue.toUpperCase() === inputCode)
+                        (inputApartmentNumber === '' || apartmentNumberValue.toUpperCase().indexOf(inputApartmentNumber) > -1) &&
+                        (inputNumOfRooms === '' || numOfRoomsValue.toUpperCase().indexOf(inputNumOfRooms) > -1) &&
+                        (inputArea === '' || areaValue.toUpperCase().indexOf(inputArea) > -1) &&
+                        (inputResidentialBuilding === '' || residentialBuildingValue.toUpperCase().indexOf(inputResidentialBuilding) > -1)
                     ) {
                         rows[i].style.display = '';
                     } else {
@@ -283,36 +276,31 @@
                 }
             }
         }
+
     </script>
 
-    <!-- Подключение jQuery и Popper.js  -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <!-- Подключение Bootstrap JS  -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
     <script>
         $(document).ready(function () {
-            // Обработчик нажатия на строку таблицы
             $('table tbody tr.table-row').on('click', function () {
-                const areaId = $(this).data('id');
-                $('#actionModal').data('id', areaId);
+                const apartmentId = $(this).data('id');
+                $('#actionModal').data('id', apartmentId);
             });
 
-            // Обработчик нажатия на кнопку "Редактировать"
             $('#editBtn').on('click', function () {
-                const areaId = $('#actionModal').data('id');
-                window.location.href = `{% url 'edit_area' 0 %}`.replace('0', areaId);
+                const apartmentId = $('#actionModal').data('id');
+                window.location.href = `{% url 'edit_apartment' 0 %}`.replace('0', apartmentId);
             });
 
-            // Обработчик нажатия на кнопку "Удалить"
             $('#deleteBtn').on('click', function () {
-                const areaId = $('#actionModal').data('id');
-                window.location.href = `{% url 'delete_area' 0 %}`.replace('0', areaId);
+                const apartmentId = $('#actionModal').data('id');
+                window.location.href = `{% url 'delete_apartment' 0 %}`.replace('0', apartmentId);
             });
         });
     </script>
-
 
     <footer>
         <p>by Прощенко Алексей и Фридрих Александр</p>

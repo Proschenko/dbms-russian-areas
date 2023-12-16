@@ -57,7 +57,7 @@ class ResidentialBuilding(models.Model):
     street = models.ForeignKey(Street, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
-        return f"{str(self.house_number)},{self.street.name_street}, {self.street.district.name_district}, {self.street.district.city.name_city}"
+        return f"{self.street.name_street} {str(self.house_number)}, {self.street.district.city.name_city}"
 
 
 class Apartment(models.Model):
