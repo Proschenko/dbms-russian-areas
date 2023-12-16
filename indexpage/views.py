@@ -142,6 +142,64 @@ def delete_city(request, id_city):
     }
     return render(request, 'indexpage/delete_city.html', context)
 # endregion
+# region District
+def table_district(request):
+    districts = District.objects.all().order_by('id_district')
+    context = {
+        'districts': districts,
+    }
+    return render(request, 'indexpage/table_district.html', context)
+
+def create_district(request):
+    if request.method == 'POST':
+        form = DistrictForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(table_district)
+    else:
+        form = DistrictForm()
+    return render(request, 'indexpage/create_district.html', {'form': form})
+
+def edit_district(request, id_district):
+    district = get_object_or_404(District, pk=id_district)
+
+    if request.method == 'POST':
+        form = DistrictForm(request.POST, instance=district)
+        if form.is_valid():
+            form.save()
+            return redirect(table_district)
+    else:
+        form = DistrictForm(instance=district)
+    return render(request, 'indexpage/edit_district.html', {'form': form, 'district': district})
+
+def delete_district(request, id_district):
+    district = get_object_or_404(District, pk=id_district)
+    if request.method == 'POST':
+        delete_type_form = DeleteTypeForm(request.POST)
+        if delete_type_form.is_valid():
+            delete_type = delete_type_form.cleaned_data['delete_type']
+            if delete_type == 'CASCADE':
+                district.delete()
+                return redirect('district_list')
+            else:
+                # Ваш запрос SQL
+                delete_district_sql = f"DELETE FROM indexpage_district WHERE id_district = {id_district}"
+
+                # Выполнение запроса
+                with connection.cursor() as cursor:
+                    cursor.execute(delete_district_sql)
+
+                return redirect('district_list')
+    else:
+        delete_type_form = DeleteTypeForm()
+
+    context = {
+        'delete_type_form': delete_type_form,
+        'district_id': id_district,
+        'district_name': district.name_district
+    }
+    return render(request, 'indexpage/delete_district.html', context)
+# endregion
 
 
 

@@ -26,7 +26,7 @@ class City(models.Model):
     id_city = models.AutoField(primary_key=True)
     name_city = models.CharField(max_length=255)
     postal_code = models.IntegerField(validators=[MinValueValidator(100000), MaxValueValidator(999999)])
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
         return f"{self.name_city}, {self.area.name_area}"
@@ -34,25 +34,25 @@ class City(models.Model):
 class District(models.Model):
     id_district = models.AutoField(primary_key=True)
     name_district = models.CharField(max_length=100, validators=[MaxLengthValidator(100)])
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
-        return self.name_district
+        return f"{self.name_district}, {self.city.name.name_city}"
 
 class Street(models.Model):
     id_street = models.AutoField(primary_key=True)
     name_street = models.CharField(max_length=255)
-    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
-        return self.name_street
+        return f"{self.name_street}, {self.district.name_district}"
 
 class ResidentialBuilding(models.Model):
     id_residential_building = models.AutoField(primary_key=True)
     house_number = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(1000)])
     year_of_construction = models.IntegerField(validators=[MinValueValidator(1800)])
     numbers_of_floors = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(300)])
-    street = models.ForeignKey(Street, on_delete=models.CASCADE)
+    street = models.ForeignKey(Street, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
         return str(self.house_number)
@@ -62,7 +62,7 @@ class Apartment(models.Model):
     apartment_number = models.CharField(max_length=50, validators=[MaxLengthValidator(50)])
     num_of_rooms = models.IntegerField(validators=[MinValueValidator(1)])
     area = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    residential_building = models.ForeignKey(ResidentialBuilding, on_delete=models.CASCADE)
+    residential_building = models.ForeignKey(ResidentialBuilding, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
         return self.apartment_number
@@ -74,7 +74,7 @@ class Citizen(models.Model):
     phone_number = models.CharField(max_length=11)
     date_of_birth = models.DateField()
     gender = models.BooleanField()
-    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE)
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
         return self.full_name
