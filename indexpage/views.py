@@ -84,6 +84,7 @@ def delete_area(request, id_area):
     return render(request, 'indexpage/delete_area.html', context)
 
 # endregion
+
 # region City
 def table_city(request):
     cities = City.objects.all().order_by('id_city')
@@ -142,6 +143,7 @@ def delete_city(request, id_city):
     }
     return render(request, 'indexpage/delete_city.html', context)
 # endregion
+
 # region District
 def table_district(request):
     districts = District.objects.all().order_by('id_district')
@@ -200,6 +202,7 @@ def delete_district(request, id_district):
     }
     return render(request, 'indexpage/delete_district.html', context)
 # endregion
+
 # region Street
 def table_street(request):
     streets = Street.objects.all().order_by('id_street')
@@ -258,6 +261,7 @@ def delete_street(request, id_street):
     }
     return render(request, 'indexpage/delete_street.html', context)
 # endregion
+
 # region ResidentialBuilding
 def table_residentialbuilding(request):
     residential_buildings = ResidentialBuilding.objects.all().order_by('id_residential_building')
@@ -316,6 +320,7 @@ def delete_residentialbuilding(request, id_residential_building):
     }
     return render(request, 'indexpage/delete_residentialbuilding.html', context)
 # endregion
+
 # region Apartment
 def table_apartment(request):
     apartments = Apartment.objects.all().order_by('id_apartment')
@@ -373,6 +378,65 @@ def delete_apartment(request, id_apartment):
         'apartment_info': f"Apartment Number: {apartment.apartment_number}, Building: {apartment.residential_building.house_number}, Street: {apartment.residential_building.street.name_street}, District: {apartment.residential_building.street.district.name_district}, City: {apartment.residential_building.street.district.city.name_city}"
     }
     return render(request, 'indexpage/delete_apartment.html', context)
+# endregion
+
+# region Citizen
+def table_citizen(request):
+    citizens = Citizen.objects.all().order_by('id_citizen')
+    context = {
+        'citizens': citizens,
+    }
+    return render(request, 'indexpage/table_citizen.html', context)
+
+def create_citizen(request):
+    if request.method == 'POST':
+        form = CitizenForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('citizen_list')
+    else:
+        form = CitizenForm()
+    return render(request, 'indexpage/create_citizen.html', {'form': form})
+
+def edit_citizen(request, id_citizen):
+    citizen = get_object_or_404(Citizen, pk=id_citizen)
+
+    if request.method == 'POST':
+        form = CitizenForm(request.POST, instance=citizen)
+        if form.is_valid():
+            form.save()
+            return redirect('citizen_list')
+    else:
+        form = CitizenForm(instance=citizen)
+    return render(request, 'indexpage/edit_citizen.html', {'form': form, 'citizen': citizen})
+
+def delete_citizen(request, id_citizen):
+    citizen = get_object_or_404(Citizen, pk=id_citizen)
+    if request.method == 'POST':
+        delete_type_form = DeleteTypeForm(request.POST)
+        if delete_type_form.is_valid():
+            delete_type = delete_type_form.cleaned_data['delete_type']
+            if delete_type == 'CASCADE':
+                citizen.delete()
+                return redirect('citizen_list')
+            else:
+                # Ваш запрос SQL
+                delete_citizen_sql = f"DELETE FROM indexpage_citizen WHERE id_citizen = {id_citizen}"
+
+                # Выполнение запроса
+                with connection.cursor() as cursor:
+                    cursor.execute(delete_citizen_sql)
+
+                return redirect('citizen_list')
+    else:
+        delete_type_form = DeleteTypeForm()
+
+    context = {
+        'delete_type_form': delete_type_form,
+        'citizen_id': id_citizen,
+        'citizen_info': f"Full Name: {citizen.full_name}, Passport Data: {citizen.passport_data}, Phone Number: {citizen.phone_number}, Date of Birth: {citizen.date_of_birth}, Gender: {'Male' if citizen.gender else 'Female'}, Apartment: {citizen.apartment}"
+    }
+    return render(request, 'indexpage/delete_citizen.html', context)
 # endregion
 
 

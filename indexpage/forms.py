@@ -79,6 +79,9 @@ class CitizenForm(forms.ModelForm):
             'apartment': 'Номер квартиры',
 
         }
+        widgets = {
+            'gender': forms.RadioSelect(choices=((True, 'Мужской'), (False, 'Женский'))),
+        }
 
 
 class DeleteTypeForm(forms.Form):

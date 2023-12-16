@@ -29,17 +29,17 @@
         }
 
         button {
-            background-color: #333;
+            background-color: #28a745; /* Зеленый цвет */
             color: #fff;
             border: none;
             padding: 10px 15px;
             cursor: pointer;
             border-radius: 4px;
-            margin-top: 10px;
+            margin-top: 10px; /* Отступ сверху */
         }
 
         button:hover {
-            background-color: #444;
+            background-color: #218838; /* Зеленый цвет при наведении */
         }
 
         a {
@@ -62,13 +62,15 @@
     </style>
 </head>
 <body>
-<form method="post" action="">
-    <h1>Добавить жителя</h1>
+{% block content %}
+
+<form method="post">
+    <h1>Редактирование жителя</h1>
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Создать</button>
+    <button type="submit">Сохранить</button>
     <a href="{% url 'citizen_list' %}">Отменить</a>
 </form>
-
+{% endblock %}
 </body>
 </html>

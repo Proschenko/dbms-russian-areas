@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Генерация отчета</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <form id="reportForm" method="post" action="{% url 'generate_report' %}">
+        <h2>Генерация отчета</h2>
+        {% csrf_token %}
+
+        <!-- Кнопка для формирования отчета в формате Word -->
+        <button type="button" onclick="generateReport('word')">Сформировать в Word</button>
+
+        <!-- Кнопка для формирования отчета в формате Excel -->
+        <button type="button" onclick="generateReport('excel')">Сформировать в Excel</button>
+
+        <a href="{% url 'citizen_list' %}">Отменить</a>
+    </form>
+
+    <script>
+        function generateReport(format) {
+            // Добавьте логику для формирования отчета с использованием JavaScript
+            // Здесь вы можете использовать AJAX-запрос для отправки выбранного формата на сервер
+            // и обработки генерации отчета на сервере.
+            // Пример использования библиотеки jQuery:
+            // $.post('{% url 'generate_report' %}', { format: format }, function(data) {
+            //     // Обработка ответа от сервера
+            // });
+
+            // Вместо AJAX-запроса, вы также можете просто отправить форму с параметром format,
+            // который будет обработан на сервере при отправке формы.
+            document.getElementById('reportForm').action += `?format=${format}`;
+            document.getElementById('reportForm').submit();
+        }
+    </script>
+</body>
+</html>

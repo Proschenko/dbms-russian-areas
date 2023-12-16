@@ -45,4 +45,11 @@ urlpatterns = [
     path('edit_apartment/<int:id_apartment>/', views.edit_apartment, name='edit_apartment'),
     path('delete_apartment/<int:id_apartment>/', views.delete_apartment, name='delete_apartment'),
     # endregion
+
+    # region Citizen
+    path('citizen_list/', views.table_citizen, name='citizen_list'),
+    path('create_citizen/', views.create_citizen, name='create_citizen'),
+    path('edit_citizen/<int:id_citizen>/', views.edit_citizen, name='edit_citizen'),
+    path('delete_citizen/<int:id_citizen>/', views.delete_citizen, name='delete_citizen'),
+    # endregion
 ]

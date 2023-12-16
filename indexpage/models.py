@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator, MaxLengthValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, MaxLengthValidator, MinLengthValidator
 
 from django.contrib.auth.models import User
 from django.http import HttpRequest
@@ -75,8 +75,8 @@ class Apartment(models.Model):
 class Citizen(models.Model):
     id_citizen = models.AutoField(primary_key=True)
     full_name = models.CharField(max_length=255)
-    passport_data = models.CharField(max_length=10)
-    phone_number = models.CharField(max_length=11)
+    passport_data = models.CharField(max_length=10, validators=[MaxLengthValidator(10), MinLengthValidator(10)])
+    phone_number = models.CharField(max_length=11, validators=[MaxLengthValidator(11), MinLengthValidator(11)])
     date_of_birth = models.DateField()
     gender = models.BooleanField()
     apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, null=True, db_constraint=False)
