@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Область</title>
+    <title>Здание</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,11 +63,11 @@
 </head>
 <body>
 <form method="post" action="">
-    <h1>Добавить область</h1>
+    <h1>Добавить здание</h1>
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Создать</button>
-    <a href="{% url 'area_list' %}">Отменить</a>
+    <a href="{% url 'city_list' %}">Отменить</a>
 </form>
 
 </body>
