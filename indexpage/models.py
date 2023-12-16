@@ -37,7 +37,7 @@ class District(models.Model):
     city = models.ForeignKey(City, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
-        return f"{self.name_district}, {self.city.name.name_city}"
+        return f"{self.name_district}, {self.city.name_city}"
 
 class Street(models.Model):
     id_street = models.AutoField(primary_key=True)
@@ -45,7 +45,7 @@ class Street(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
-        return f"{self.name_street}, {self.district.name_district}"
+        return f"{self.name_street}, {self.district.name_district}, {self.district.city.name_city}"
 
 class ResidentialBuilding(models.Model):
     id_residential_building = models.AutoField(primary_key=True)
@@ -55,7 +55,7 @@ class ResidentialBuilding(models.Model):
     street = models.ForeignKey(Street, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
-        return str(self.house_number)
+        return f"{str(self.house_number)},{self.name_street}, {self.district.name_district}, {self.district.city.name_city}"
 
 class Apartment(models.Model):
     id_apartment = models.AutoField(primary_key=True)

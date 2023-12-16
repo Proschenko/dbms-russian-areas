@@ -161,36 +161,36 @@
             <li><a href="{% url 'area_list' %}">Квартиры</a></li>
             <li><a href="{% url 'area_list' %}">Жильцы</a></li>
 
-            <li style="margin-top: 150px;"><a href="{% url 'create_district' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+            <li style="margin-top: 150px;"><a href="{% url 'create_street' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
 
-            <form style="margin-top: 15px;" method="get" action="{% url 'district_list' %}">
-                <input type="text" id="search_name_district" name="search_name_district" placeholder="Поиск по названию">
-                <input type="text" id="search_city_name" name="search_city_name" placeholder="Поиск по городу">
-                <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterDistrictTable()">Применить фильтры</button>
+            <form style="margin-top: 15px;" method="get" action="{% url 'street_list' %}">
+                <input type="text" id="search_name_street" name="search_name_street" placeholder="Поиск по названию">
+                <input type="text" id="search_district_name" name="search_district_name" placeholder="Поиск по району">
+                <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterStreetTable()">Применить фильтры</button>
             </form>
 
 
             <li style="margin-top: 15px;">
-                <a href="{% url 'district_list' %}" class="btn btn-success">Сформировать отчет</a>
+                <a href="{% url 'street_list' %}" class="btn btn-success">Сформировать отчет</a>
             </li>
         </ul>
     </div>
 
     <div class="right-column">
-        <h2>Таблица районов</h2>
+        <h2>Таблица улиц</h2>
 
-        <table id="districtTable" class="table">
+        <table id="streetTable" class="table">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">Название района</th>
-                    <th onclick="sortTable(1)">Город</th>
+                    <th onclick="sortTable(0)">Название улицы</th>
+                    <th onclick="sortTable(1)">Район</th>
                 </tr>
             </thead>
             <tbody>
-                {% for district in districts %}
-                <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ district.id_district }}">
-                    <td>{{ district.name_district }}</td>
-                    <td>{{ district.city.name_city }}</td>
+                {% for street in streets %}
+                <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ street.id_street }}">
+                    <td>{{ street.name_street }}</td>
+                    <td>{{ street.district.name_district }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -221,7 +221,7 @@
 <script>
     function sortTable(columnIndex) {
         var table, rows, switching, i, x, y, shouldSwitch;
-        table = document.getElementById("districtTable");
+        table = document.getElementById("streetTable");
         switching = true;
         while (switching) {
             switching = false;
@@ -242,24 +242,24 @@
         }
     }
 
-    function filterDistrictTable() {
+    function filterStreetTable() {
         console.log("Filtering table...")
-        var inputName = document.getElementById('search_name_district').value.toUpperCase();
-        var inputCityName = document.getElementById('search_city_name').value.toUpperCase();
-        var table = document.getElementById('districtTable');
+        var inputName = document.getElementById('search_name_street').value.toUpperCase();
+        var inputDistrictName = document.getElementById('search_district_name').value.toUpperCase();
+        var table = document.getElementById('streetTable');
         var rows = table.getElementsByClassName('table-row');
 
         for (var i = 0; i < rows.length; i++) {
             var nameCol = rows[i].getElementsByTagName('td')[0];
-            var cityCol = rows[i].getElementsByTagName('td')[1];
+            var districtCol = rows[i].getElementsByTagName('td')[1];
 
-            if (rows[i].classList.contains('table-row') && nameCol && cityCol) {
+            if (rows[i].classList.contains('table-row') && nameCol && districtCol) {
                 var nameValue = nameCol.textContent || nameCol.innerText;
-                var cityNameValue = cityCol.textContent || cityCol.innerText;
+                var districtNameValue = districtCol.textContent || districtCol.innerText;
 
                 if (
                     (inputName === '' || nameValue.toUpperCase().indexOf(inputName) > -1) &&
-                    (inputCityName === '' || cityNameValue.toUpperCase().indexOf(inputCityName) > -1)
+                    (inputDistrictName === '' || districtNameValue.toUpperCase().indexOf(inputDistrictName) > -1)
                 ) {
                     rows[i].style.display = '';
                 } else {
@@ -268,7 +268,6 @@
             }
         }
     }
-
 </script>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -278,18 +277,18 @@
 <script>
     $(document).ready(function () {
         $('table tbody tr.table-row').on('click', function () {
-            const districtId = $(this).data('id');
-            $('#actionModal').data('id', districtId);
+            const streetId = $(this).data('id');
+            $('#actionModal').data('id', streetId);
         });
 
         $('#editBtn').on('click', function () {
-            const districtId = $('#actionModal').data('id');
-            window.location.href = `{% url 'edit_district' 0 %}`.replace('0', districtId);
+            const streetId = $('#actionModal').data('id');
+            window.location.href = `{% url 'edit_street' 0 %}`.replace('0', streetId);
         });
 
         $('#deleteBtn').on('click', function () {
-            const districtId = $('#actionModal').data('id');
-            window.location.href = `{% url 'delete_district' 0 %}`.replace('0', districtId);
+            const streetId = $('#actionModal').data('id');
+            window.location.href = `{% url 'delete_street' 0 %}`.replace('0', streetId);
         });
     });
 </script>

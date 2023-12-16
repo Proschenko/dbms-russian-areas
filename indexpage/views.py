@@ -201,6 +201,64 @@ def delete_district(request, id_district):
     return render(request, 'indexpage/delete_district.html', context)
 # endregion
 
+# region Street
+def table_street(request):
+    streets = Street.objects.all().order_by('id_street')
+    context = {
+        'streets': streets,
+    }
+    return render(request, 'indexpage/table_street.html', context)
+
+def create_street(request):
+    if request.method == 'POST':
+        form = StreetForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(table_street)
+    else:
+        form = StreetForm()
+    return render(request, 'indexpage/create_street.html', {'form': form})
+
+def edit_street(request, id_street):
+    street = get_object_or_404(Street, pk=id_street)
+
+    if request.method == 'POST':
+        form = StreetForm(request.POST, instance=street)
+        if form.is_valid():
+            form.save()
+            return redirect(table_street)
+    else:
+        form = StreetForm(instance=street)
+    return render(request, 'indexpage/edit_street.html', {'form': form, 'street': street})
+
+def delete_street(request, id_street):
+    street = get_object_or_404(Street, pk=id_street)
+    if request.method == 'POST':
+        delete_type_form = DeleteTypeForm(request.POST)
+        if delete_type_form.is_valid():
+            delete_type = delete_type_form.cleaned_data['delete_type']
+            if delete_type == 'CASCADE':
+                street.delete()
+                return redirect('street_list')
+            else:
+                # Ваш запрос SQL
+                delete_street_sql = f"DELETE FROM indexpage_street WHERE id_street = {id_street}"
+
+                # Выполнение запроса
+                with connection.cursor() as cursor:
+                    cursor.execute(delete_street_sql)
+
+                return redirect('street_list')
+    else:
+        delete_type_form = DeleteTypeForm()
+
+    context = {
+        'delete_type_form': delete_type_form,
+        'street_id': id_street,
+        'street_name': street.name_street
+    }
+    return render(request, 'indexpage/delete_street.html', context)
+# endregion
 
 
 

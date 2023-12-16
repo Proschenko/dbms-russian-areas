@@ -24,4 +24,11 @@ urlpatterns = [
     path('edit_district/<int:id_district>/', views.edit_district, name='edit_district'),
     path('delete_district/<int:id_district>/', views.delete_district, name='delete_district'),
     # endregion
+
+    # region Street
+    path('street_list/', views.table_street, name='street_list'),
+    path('create_street/', views.create_street, name='create_street'),
+    path('edit_street/<int:id_street>/', views.edit_street, name='edit_street'),
+    path('delete_street/<int:id_street>/', views.delete_street, name='delete_street'),
+    # endregion
 ]
