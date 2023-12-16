@@ -200,7 +200,6 @@ def delete_district(request, id_district):
     }
     return render(request, 'indexpage/delete_district.html', context)
 # endregion
-
 # region Street
 def table_street(request):
     streets = Street.objects.all().order_by('id_street')
@@ -258,6 +257,64 @@ def delete_street(request, id_street):
         'street_name': street.name_street
     }
     return render(request, 'indexpage/delete_street.html', context)
+# endregion
+# region ResidentialBuilding
+def table_residentialbuilding(request):
+    residential_buildings = ResidentialBuilding.objects.all().order_by('id_residential_building')
+    context = {
+        'residential_buildings': residential_buildings,
+    }
+    return render(request, 'indexpage/table_residentialbuilding.html', context)
+
+def create_residentialbuilding(request):
+    if request.method == 'POST':
+        form = ResidentialBuildingForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(table_residentialbuilding)
+    else:
+        form = ResidentialBuildingForm()
+    return render(request, 'indexpage/create_residentialbuilding.html', {'form': form})
+
+def edit_residentialbuilding(request, id_residential_building):
+    residential_building = get_object_or_404(ResidentialBuilding, pk=id_residential_building)
+
+    if request.method == 'POST':
+        form = ResidentialBuildingForm(request.POST, instance=residential_building)
+        if form.is_valid():
+            form.save()
+            return redirect(table_residentialbuilding)
+    else:
+        form = ResidentialBuildingForm(instance=residential_building)
+    return render(request, 'indexpage/edit_residentialbuilding.html', {'form': form, 'residential_building': residential_building})
+
+def delete_residentialbuilding(request, id_residential_building):
+    residential_building = get_object_or_404(ResidentialBuilding, pk=id_residential_building)
+    if request.method == 'POST':
+        delete_type_form = DeleteTypeForm(request.POST)
+        if delete_type_form.is_valid():
+            delete_type = delete_type_form.cleaned_data['delete_type']
+            if delete_type == 'CASCADE':
+                residential_building.delete()
+                return redirect('residentialbuilding_list')
+            else:
+                # Ваш запрос SQL
+                delete_residential_building_sql = f"DELETE FROM indexpage_residentialbuilding WHERE id_residential_building = {id_residential_building}"
+
+                # Выполнение запроса
+                with connection.cursor() as cursor:
+                    cursor.execute(delete_residential_building_sql)
+
+                return redirect('residentialbuilding_list')
+    else:
+        delete_type_form = DeleteTypeForm()
+
+    context = {
+        'delete_type_form': delete_type_form,
+        'residential_building_id': id_residential_building,
+        'residential_building_info': f"{residential_building.house_number}, {residential_building.street.name_street}, {residential_building.street.district.name_district}, {residential_building.street.district.city.name_city}"
+    }
+    return render(request, 'indexpage/delete_residentialbuilding.html', context)
 # endregion
 
 

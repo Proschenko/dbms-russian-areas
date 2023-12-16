@@ -161,36 +161,42 @@
             <li><a href="{% url 'area_list' %}">Квартиры</a></li>
             <li><a href="{% url 'area_list' %}">Жильцы</a></li>
 
-            <li style="margin-top: 150px;"><a href="{% url 'create_street' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+            <li style="margin-top: 150px;"><a href="{% url 'create_residentialbuilding' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
 
-            <form style="margin-top: 15px;" method="get" action="{% url 'street_list' %}">
-                <input type="text" id="search_name_street" name="search_name_street" placeholder="Поиск по названию">
-                <input type="text" id="search_district_name" name="search_district_name" placeholder="Поиск по району">
-                <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterStreetTable()">Применить фильтры</button>
+            <form style="margin-top: 15px;" method="get" action="{% url 'residentialbuilding_list' %}">
+                <input type="text" id="search_house_number" name="search_house_number" placeholder="Поиск по номеру дома">
+                <input type="text" id="search_street_name" name="search_street_name" placeholder="Поиск по улице">
+                <input type="text" id="search_year_of_construction" name="search_year_of_construction" placeholder="Поиск по году ">
+                <input type="text" id="search_numbers_of_floors" name="search_numbers_of_floors" placeholder="Поиск по кол-ву этажей">
+                <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterResidentialBuildingTable()">Применить фильтры</button>
             </form>
 
 
             <li style="margin-top: 15px;">
-                <a href="{% url 'street_list' %}" class="btn btn-success">Сформировать отчет</a>
+                <a href="{% url 'residentialbuilding_list' %}" class="btn btn-success">Сформировать отчет</a>
             </li>
         </ul>
     </div>
 
     <div class="right-column">
-        <h2>Таблица улиц</h2>
+        <h2>Таблица жилых домов</h2>
 
-        <table id="streetTable" class="table">
+        <table id="residentialbuildingTable" class="table">
             <thead>
                 <tr>
-                    <th onclick="sortTable(0)">Название улицы</th>
-                    <th onclick="sortTable(1)">Район</th>
+                    <th onclick="sortTable(0)">Номер дома</th>
+                    <th onclick="sortTable(1)">Год постройки</th>
+                    <th onclick="sortTable(2)">Количество этажей</th>
+                    <th onclick="sortTable(3)">Улица</th>
                 </tr>
             </thead>
             <tbody>
-                {% for street in streets %}
-                <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ street.id_street }}">
-                    <td>{{ street.name_street }}</td>
-                    <td>{{ street.district.name_district }}</td>
+                {% for residential_building in residential_buildings %}
+                <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ residential_building.id_residential_building }}">
+                    <td>{{ residential_building.house_number }}</td>
+                    <td>{{ residential_building.year_of_construction }}</td>
+                    <td>{{ residential_building.numbers_of_floors }}</td>
+                    <td>{{ residential_building.street.name_street }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -221,7 +227,7 @@
 <script>
     function sortTable(columnIndex) {
         var table, rows, switching, i, x, y, shouldSwitch;
-        table = document.getElementById("streetTable");
+        table = document.getElementById("residentialbuildingTable");
         switching = true;
         while (switching) {
             switching = false;
@@ -242,24 +248,32 @@
         }
     }
 
-    function filterStreetTable() {
+    function filterResidentialBuildingTable() {
         console.log("Filtering table...")
-        var inputName = document.getElementById('search_name_street').value.toUpperCase();
-        var inputDistrictName = document.getElementById('search_district_name').value.toUpperCase();
-        var table = document.getElementById('streetTable');
+        var inputHouseNumber = document.getElementById('search_house_number').value.toUpperCase();
+        var inputStreetName = document.getElementById('search_street_name').value.toUpperCase();
+        var inputYearOfConstruction = document.getElementById('search_year_of_construction').value.toUpperCase();
+        var inputNumbersOfFloors = document.getElementById('search_numbers_of_floors').value.toUpperCase();
+        var table = document.getElementById('residentialbuildingTable');
         var rows = table.getElementsByClassName('table-row');
 
         for (var i = 0; i < rows.length; i++) {
-            var nameCol = rows[i].getElementsByTagName('td')[0];
-            var districtCol = rows[i].getElementsByTagName('td')[1];
+            var houseNumberCol = rows[i].getElementsByTagName('td')[0];
+            var yearOfConstructionCol = rows[i].getElementsByTagName('td')[1];
+            var numbersOfFloorsCol = rows[i].getElementsByTagName('td')[2];
+            var streetCol = rows[i].getElementsByTagName('td')[3];
 
-            if (rows[i].classList.contains('table-row') && nameCol && districtCol) {
-                var nameValue = nameCol.textContent || nameCol.innerText;
-                var districtNameValue = districtCol.textContent || districtCol.innerText;
+            if (rows[i].classList.contains('table-row') && houseNumberCol && yearOfConstructionCol && numbersOfFloorsCol && streetCol) {
+                var houseNumberValue = houseNumberCol.textContent || houseNumberCol.innerText;
+                var yearOfConstructionValue = yearOfConstructionCol.textContent || yearOfConstructionCol.innerText;
+                var numbersOfFloorsValue = numbersOfFloorsCol.textContent || numbersOfFloorsCol.innerText;
+                var streetValue = streetCol.textContent || streetCol.innerText;
 
                 if (
-                    (inputName === '' || nameValue.toUpperCase().indexOf(inputName) > -1) &&
-                    (inputDistrictName === '' || districtNameValue.toUpperCase().indexOf(inputDistrictName) > -1)
+                    (inputHouseNumber === '' || houseNumberValue.toUpperCase().indexOf(inputHouseNumber) > -1) &&
+                    (inputStreetName === '' || streetValue.toUpperCase().indexOf(inputStreetName) > -1) &&
+                    (inputYearOfConstruction === '' || yearOfConstructionValue.toUpperCase().indexOf(inputYearOfConstruction) > -1) &&
+                    (inputNumbersOfFloors === '' || numbersOfFloorsValue.toUpperCase().indexOf(inputNumbersOfFloors) > -1)
                 ) {
                     rows[i].style.display = '';
                 } else {
@@ -268,6 +282,8 @@
             }
         }
     }
+
+
 </script>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -277,18 +293,18 @@
 <script>
     $(document).ready(function () {
         $('table tbody tr.table-row').on('click', function () {
-            const streetId = $(this).data('id');
-            $('#actionModal').data('id', streetId);
+            const residentialbuildingId = $(this).data('id');
+            $('#actionModal').data('id', residentialbuildingId);
         });
 
         $('#editBtn').on('click', function () {
-            const streetId = $('#actionModal').data('id');
-            window.location.href = `{% url 'edit_street' 0 %}`.replace('0', streetId);
+            const residentialbuildingId = $('#actionModal').data('id');
+            window.location.href = `{% url 'edit_residentialbuilding' 0 %}`.replace('0', residentialbuildingId);
         });
 
         $('#deleteBtn').on('click', function () {
-            const streetId = $('#actionModal').data('id');
-            window.location.href = `{% url 'delete_street' 0 %}`.replace('0', streetId);
+            const residentialbuildingId = $('#actionModal').data('id');
+            window.location.href = `{% url 'delete_residentialbuilding' 0 %}`.replace('0', residentialbuildingId);
         });
     });
 </script>

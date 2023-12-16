@@ -31,4 +31,11 @@ urlpatterns = [
     path('edit_street/<int:id_street>/', views.edit_street, name='edit_street'),
     path('delete_street/<int:id_street>/', views.delete_street, name='delete_street'),
     # endregion
+
+    # region ResidentialBuilding
+    path('residentialbuilding_list/', views.table_residentialbuilding, name='residentialbuilding_list'),
+    path('create_residentialbuilding/', views.create_residentialbuilding, name='create_residentialbuilding'),
+    path('edit_residentialbuilding/<int:id_residential_building>/', views.edit_residentialbuilding, name='edit_residentialbuilding'),
+    path('delete_residentialbuilding/<int:id_residential_building>/', views.delete_residentialbuilding, name='delete_residentialbuilding'),
+    # endregion
 ]

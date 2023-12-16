@@ -7,7 +7,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 
-
 @receiver(post_save, sender=User)
 def user_saved(sender, instance, created, **kwargs):
     instance.request = HttpRequest()
@@ -18,9 +17,9 @@ class Area(models.Model):
     name_area = models.CharField(max_length=255)
     subject_code = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(999)])
 
-
     def __str__(self):
         return self.name_area
+
 
 class City(models.Model):
     id_city = models.AutoField(primary_key=True)
@@ -31,6 +30,7 @@ class City(models.Model):
     def __str__(self):
         return f"{self.name_city}, {self.area.name_area}"
 
+
 class District(models.Model):
     id_district = models.AutoField(primary_key=True)
     name_district = models.CharField(max_length=100, validators=[MaxLengthValidator(100)])
@@ -38,6 +38,7 @@ class District(models.Model):
 
     def __str__(self):
         return f"{self.name_district}, {self.city.name_city}"
+
 
 class Street(models.Model):
     id_street = models.AutoField(primary_key=True)
@@ -47,6 +48,7 @@ class Street(models.Model):
     def __str__(self):
         return f"{self.name_street}, {self.district.name_district}, {self.district.city.name_city}"
 
+
 class ResidentialBuilding(models.Model):
     id_residential_building = models.AutoField(primary_key=True)
     house_number = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(1000)])
@@ -55,17 +57,20 @@ class ResidentialBuilding(models.Model):
     street = models.ForeignKey(Street, on_delete=models.CASCADE, null=True, db_constraint=False)
 
     def __str__(self):
-        return f"{str(self.house_number)},{self.name_street}, {self.district.name_district}, {self.district.city.name_city}"
+        return f"{str(self.house_number)},{self.street.name_street}, {self.street.district.name_district}, {self.street.district.city.name_city}"
+
 
 class Apartment(models.Model):
     id_apartment = models.AutoField(primary_key=True)
     apartment_number = models.CharField(max_length=50, validators=[MaxLengthValidator(50)])
     num_of_rooms = models.IntegerField(validators=[MinValueValidator(1)])
     area = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
-    residential_building = models.ForeignKey(ResidentialBuilding, on_delete=models.CASCADE, null=True, db_constraint=False)
+    residential_building = models.ForeignKey(ResidentialBuilding, on_delete=models.CASCADE, null=True,
+                                             db_constraint=False)
 
     def __str__(self):
-        return self.apartment_number
+        return f"{self.apartment_number}, {self.residential_building.street.name_street}, {str(self.residential_building.house_number)},{self.residential_building.street.district.city.name_city}"
+
 
 class Citizen(models.Model):
     id_citizen = models.AutoField(primary_key=True)
