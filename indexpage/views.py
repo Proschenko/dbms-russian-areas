@@ -18,6 +18,8 @@ from .forms import AreaForm, CityForm, DistrictForm, StreetForm, ResidentialBuil
 
 def index_page(request):
     return render(request, 'indexpage/index.html')
+
+# region Area
 def table_area(request):
     areas = Area.objects.all().order_by('id_area')
     context = {
@@ -80,6 +82,66 @@ def delete_area(request, id_area):
         'area_name': area.name_area
     }
     return render(request, 'indexpage/delete_area.html', context)
+
+# endregion
+# region City
+def table_city(request):
+    cities = City.objects.all().order_by('id_city')
+    context = {
+        'cities': cities,
+    }
+    return render(request, 'indexpage/table_city.html', context)
+
+def create_city(request):
+    if request.method == 'POST':
+        form = CityForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(table_city)
+    else:
+        form = CityForm()
+    return render(request, 'indexpage/create_city.html', {'form': form})
+
+def edit_city(request, id_city):
+    city = get_object_or_404(City, pk=id_city)
+
+    if request.method == 'POST':
+        form = CityForm(request.POST, instance=city)
+        if form.is_valid():
+            form.save()
+            return redirect(table_city)
+    else:
+        form = CityForm(instance=city)
+    return render(request, 'indexpage/edit_city.html', {'form': form, 'city': city})
+
+def delete_city(request, id_city):
+    city = get_object_or_404(City, pk=id_city)
+    if request.method == 'POST':
+        delete_type_form = DeleteTypeForm(request.POST)
+        if delete_type_form.is_valid():
+            delete_type = delete_type_form.cleaned_data['delete_type']
+            if delete_type == 'CASCADE':
+                city.delete()
+                return redirect('city_list')
+            else:
+                # Ваш запрос SQL
+                delete_city_sql = f"DELETE FROM indexpage_city WHERE id_city = {id_city}"
+
+                # Выполнение запроса
+                with connection.cursor() as cursor:
+                    cursor.execute(delete_city_sql)
+
+                return redirect('city_list')
+    else:
+        delete_type_form = DeleteTypeForm()
+
+    context = {
+        'delete_type_form': delete_type_form,
+        'city_id': id_city,
+        'city_name': city.name_city
+    }
+    return render(request, 'indexpage/delete_city.html', context)
+# endregion
 
 
 

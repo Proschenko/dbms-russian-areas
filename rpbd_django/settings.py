@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'rpbd_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'RPBD_4_v2',
+        'NAME': 'RPBD_4_v3',
         'USER': 'postgres',
         'PASSWORD': 'fffggg55',
         'HOST': 'localhost',
@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 

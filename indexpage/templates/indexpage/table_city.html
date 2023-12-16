@@ -67,7 +67,6 @@
             }
         }
 
-
         .left-column a.btn {
             background-color: #333;
             color: #fff;
@@ -80,14 +79,14 @@
 
         /* Стилизация кнопки "Применить фильтры" */
         button.btn.btn-primary {
-            background-color: #333;  /* Цвет шапки и футтера, замените при необходимости */
-            color: #fff;  /* Цвет текста на кнопке, выберите подходящий */
-            transition: background-color 0.3s;  /* Плавное изменение цвета при наведении */
+            background-color: #333;
+            color: #fff;
+            transition: background-color 0.3s;
         }
 
         /* Изменение цвета фона при наведении */
         button.btn.btn-primary:hover {
-            background-color: #444;  /* Цвет при наведении, замените при необходимости */
+            background-color: #444;
         }
 
         .right-column {
@@ -120,7 +119,6 @@
             background-color: #f5f5f5;
             cursor: pointer;
         }
-
 
         th, td {
             border: 1px solid #ddd;
@@ -158,8 +156,8 @@
         <div class="left-column">
             <h2>Выберите таблицу</h2>
             <!-- исправить ссылки на верные после их создания -->
-            #TODO
             <ul>
+                #TODO
                 <li><a href="{% url 'area_list' %}">Области</a></li>
                 <li><a href="{% url 'city_list' %}">Населенные пункты</a></li>
                 <li><a href="{% url 'area_list' %}">Районы</a></li>
@@ -169,18 +167,20 @@
                 <li><a href="{% url 'area_list' %}">Жильцы</a></li>
 
 
-                <li style="margin-top: 150px;"><a href="{% url 'create_area' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+
+                <li style="margin-top: 150px;"><a href="{% url 'create_city' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
 
                 <!-- Поисковые поля -->
-                <form style="margin-top: 15px;" method="get" action="{% url 'area_list' %}">
-                    <input type="text" id="search_name_area" name="search_name_area" placeholder="Поиск по названию">
-                    <input type="text" id="search_code_area" name="search_code_area" placeholder="Поиск по коду региона">
-                    <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterAreaTable()">Применить фильтры</button>
+                <form style="margin-top: 15px;" method="get" action="{% url 'city_list' %}">
+                    <input type="text" id="search_name_city" name="search_name_city" placeholder="Поиск по названию">
+                    <input type="text" id="search_code_city" name="search_code_city" placeholder="Поиск по почтовому коду">
+                    <input type="text" id="search_area_name" name="search_area_name" placeholder="Поиск по области">
+                    <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterCityTable()">Применить фильтры</button>
                 </form>
 
                 <!-- Стилизованная кнопка "Сформировать отчет" с использованием Bootstrap  -->
                 <li style="margin-top: 15px;">
-                    <a href="{% url 'area_list' %}" class="btn btn-success">Сформировать отчет</a>
+                    <a href="{% url 'city_list' %}" class="btn btn-success">Сформировать отчет</a>
                 </li>
             </ul>
 
@@ -188,20 +188,23 @@
         </div>
 
         <div class="right-column">
-            <h2>Таблица областей</h2>
+            <h2>Таблица населенных пунктов</h2>
 
-            <table id="areaTable" class="table">
+            <table id="cityTable" class="table">
                 <thead>
                     <tr>
-                        <th onclick="sortTable(0)">Название области</th>
-                        <th onclick="sortTable(1)">Код региона</th>
+                        <th onclick="sortTable(0)">Название населенного пункта</th>
+                        <th onclick="sortTable(1)">Почтовый индекс</th>
+                        <th onclick="sortTable(2)">Область</th>
+                        <!-- Добавьте остальные заголовки по аналогии -->
                     </tr>
                 </thead>
                 <tbody>
-                    {% for area in areas %}
-                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ area.id_area }}">
-                        <td>{{ area.name_area }}</td>
-                        <td>{{ area.subject_code }}</td>
+                    {% for city in cities %}
+                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ city.id_city }}">
+                        <td>{{ city.name_city }}</td>
+                        <td>{{ city.postal_code }}</td>
+                        <td>{{ city.area.name_area}}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -210,7 +213,6 @@
 
     </main>
     <div>\<br></div>
-
 
     <!-- Модальное окно для действий -->
     <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel"
@@ -232,11 +234,10 @@
         </div>
     </div>
 
-
     <script>
         function sortTable(columnIndex) {
             var table, rows, switching, i, x, y, shouldSwitch;
-            table = document.getElementById("areaTable");
+            table = document.getElementById("cityTable");
             switching = true;
             while (switching) {
                 switching = false;
@@ -257,25 +258,28 @@
             }
         }
 
-        function filterAreaTable() {
+        function filterCityTable() {
             console.log("Filtering table...")
-            var inputName = document.getElementById('search_name_area').value.toUpperCase();
-            var inputCode = document.getElementById('search_code_area').value.toUpperCase();
-            var table = document.getElementById('areaTable');
+            var inputName = document.getElementById('search_name_city').value.toUpperCase();
+            var inputCode = document.getElementById('search_code_city').value.toUpperCase();
+            var inputAreaName = document.getElementById('search_area_name').value.toUpperCase();
+            var table = document.getElementById('cityTable');
             var rows = table.getElementsByClassName('table-row');
 
             for (var i = 0; i < rows.length; i++) {
                 var nameCol = rows[i].getElementsByTagName('td')[0];
                 var codeCol = rows[i].getElementsByTagName('td')[1];
+                var areaCol = rows[i].getElementsByTagName('td')[2];
 
-                if (rows[i].classList.contains('table-row') && nameCol && codeCol) {
+                if (rows[i].classList.contains('table-row') && nameCol && codeCol && areaCol) {
                     var nameValue = nameCol.textContent || nameCol.innerText;
                     var codeValue = codeCol.textContent || codeCol.innerText;
+                    var areaValue = areaCol.textContent || areaCol.innerText;
 
-                    // Проверка на пустые значения
                     if (
                         (inputName === '' || nameValue.toUpperCase().indexOf(inputName) > -1) &&
-                        (inputCode === '' || codeValue.toUpperCase() === inputCode)
+                        (inputCode === '' || codeValue.toUpperCase() === inputCode) &&
+                        (inputAreaName === '' || areaValue.toUpperCase().indexOf(inputAreaName)  > -1)
                     ) {
                         rows[i].style.display = '';
                     } else {
@@ -296,24 +300,23 @@
         $(document).ready(function () {
             // Обработчик нажатия на строку таблицы
             $('table tbody tr.table-row').on('click', function () {
-                const areaId = $(this).data('id');
-                $('#actionModal').data('id', areaId);
+                const cityId = $(this).data('id');
+                $('#actionModal').data('id', cityId);
             });
 
             // Обработчик нажатия на кнопку "Редактировать"
             $('#editBtn').on('click', function () {
-                const areaId = $('#actionModal').data('id');
-                window.location.href = `{% url 'edit_area' 0 %}`.replace('0', areaId);
+                const cityId = $('#actionModal').data('id');
+                window.location.href = `{% url 'edit_city' 0 %}`.replace('0', cityId);
             });
 
             // Обработчик нажатия на кнопку "Удалить"
             $('#deleteBtn').on('click', function () {
-                const areaId = $('#actionModal').data('id');
-                window.location.href = `{% url 'delete_area' 0 %}`.replace('0', areaId);
+                const cityId = $('#actionModal').data('id');
+                window.location.href = `{% url 'delete_city' 0 %}`.replace('0', cityId);
             });
         });
     </script>
-
 
     <footer>
         <p>by Прощенко Алексей и Фридрих Александр</p>

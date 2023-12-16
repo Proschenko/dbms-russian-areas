@@ -26,10 +26,10 @@ class City(models.Model):
     id_city = models.AutoField(primary_key=True)
     name_city = models.CharField(max_length=255)
     postal_code = models.IntegerField(validators=[MinValueValidator(100000), MaxValueValidator(999999)])
-    area = models.ForeignKey(Area, on_delete=models.CASCADE)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.name_city
+        return f"{self.name_city}, {self.area.name_area}"
 
 class District(models.Model):
     id_district = models.AutoField(primary_key=True)
