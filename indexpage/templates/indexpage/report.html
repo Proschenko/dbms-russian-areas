@@ -169,7 +169,7 @@
 
                 <!-- Поисковые поля -->
 
-                <form style="margin-top: 15px;" method="get" action="{% url 'citizen_list' %}">
+                <form style="margin-top: 15px;" method="get" action="{% url 'export_visible_rows' report_type='default' %}" id="generate-report-form">
                     <input type="text" id="search_full_name" name="search_full_name" placeholder="Поиск по ФИО">
                     <input type="text" id="search_passport_data" name="search_passport_data" placeholder="Поиск по паспортным данным">
                     <input type="text" id="search_phone_number" name="search_phone_number" placeholder="Поиск по номеру телефона">
@@ -185,14 +185,15 @@
                     <label for="end_date">Конечная дата:</label>
                     <input type="date" id="end_date" name="end_date">
 
-                    <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterReportTable()">Применить фильтры</button>
+                    <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterReportTable('none')">Применить фильтры</button>
+                    <input type="hidden" name="visible_citizen_ids" id="visible-citizen-ids" value="">
+                    <input type="hidden" name="report_type" id="report_type" value="default">
+
+
+                    <button id="exportToWordBtn" style="margin-top: 5px;" class="btn btn-primary" type="submit" onclick="filterReportTable('word')">Экспорт в Word</button>
+                    <button id="exportToExcelBtn" style="margin-top: 5px;" class="btn btn-primary" type="submit" onclick="filterReportTable('excel')">Экспорт в Excel</button>
                 </form>
 
-                <form action="">
-                    <button id="exportToWordBtn" style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="exportVisibleRows('word')">Экспорт в Word</button>
-                    <button id="exportToExcelBtn" style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="exportVisibleRows('excel')">Экспорт в Excel</button>
-
-                </form>
 
 
             </ul>
@@ -240,73 +241,48 @@
         </div>
 
 
-    <script>
-        // Функция для получения CSRF-токена из cookie
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    </script>
-    <script>
-        function exportVisibleRows(reportType) {
-            var table = document.getElementById('reportTable');
-            var rows = table.getElementsByClassName('table-row');
-            var visibleCitizenIds = [];
+<!--    <script>-->
+<!--        // Функция для получения CSRF-токена из cookie-->
+<!--        function getCookie(name) {-->
+<!--            var cookieValue = null;-->
+<!--            if (document.cookie && document.cookie !== '') {-->
+<!--                var cookies = document.cookie.split(';');-->
+<!--                for (var i = 0; i < cookies.length; i++) {-->
+<!--                    var cookie = cookies[i].trim();-->
+<!--                    if (cookie.substring(0, name.length + 1) === (name + '=')) {-->
+<!--                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));-->
+<!--                        break;-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--            return cookieValue;-->
+<!--        }-->
+<!--    </script>-->
 
-            for (var i = 0; i < rows.length; i++) {
-                if (rows[i].style.display !== 'none') {
-                    var citizenId = rows[i].getAttribute('data-id');
+<!--    <script>-->
+<!--        function exportVisibleRows() {-->
+<!--            var table = document.getElementById('reportTable');-->
+<!--            var rows = table.getElementsByClassName('table-row');-->
+<!--            var visibleCitizenIds = [];-->
 
-                    visibleCitizenIds.push(citizenId);
-                }
-            }
-            $.ajax({
-                type: 'POST',
-                url: '/export_visible_rows/',
-                headers: { 'X-CSRFToken': csrftoken },
-                data: {
-                    'visible_citizen_ids': JSON.stringify(visibleCitizenIds),
-                    'report_type': reportType
-                },
-                success: function (data) {
-                    handleDownload(data, reportType);
-                },
-                error: function (error) {
-                    console.error('Error:', error);
-                }
-            });
-        }
+<!--            for (var i = 0; i < rows.length; i++) {-->
+<!--                if (rows[i].style.display !== 'none') {-->
+<!--                    var citizenId = rows[i].getAttribute('data-id');-->
 
-        function handleDownload(data, reportType) {
-            var blob = new Blob([data], { type: 'application/octet-stream' });
-            var link = document.createElement('a');
-
-            if (reportType === 'word') {
-                link.download = 'citizen_report.docx';
-            } else if (reportType === 'excel') {
-                link.download = 'citizen_report.xlsx';
-            }
-
-            link.href = window.URL.createObjectURL(blob);
-            link.click();
-        }
+<!--                    visibleCitizenIds.push(citizenId);-->
+<!--                }-->
+<!--            }-->
 
 
-    </script>
+
+
+
+<!--    </script>-->
 
     </main>
     <div>\<br></div>
 
+                <!--  headers: { 'X-CSRFToken': csrftoken },-->
 
 
     <script>
@@ -353,7 +329,7 @@
             }
         }
 
-        function filterReportTable() {
+        function filterReportTable(reportType) {
             // Получаем значения из элементов формы
             var inputFullName = document.getElementById('search_full_name').value.toUpperCase();
             var inputPassportData = document.getElementById('search_passport_data').value.toUpperCase();
@@ -373,6 +349,7 @@
             var table = document.getElementById('reportTable');
             var rows = table.getElementsByClassName('table-row');
 
+            var visibleCitizenIds = [];
             for (var i = 0; i < rows.length; i++) {
                 var fullNameCol = rows[i].getElementsByTagName('td')[0];
                 var passportDataCol = rows[i].getElementsByTagName('td')[1];
@@ -423,9 +400,22 @@
                 } else {
                     rows[i].style.display = 'none';
                 }
+                if (rows[i].style.display !== 'none') {
+                    var citizenId = rows[i].getAttribute('data-id');
+                    visibleCitizenIds.push(citizenId);
+                }
+                console.log(visibleCitizenIds)
             }
-        }
+            document.getElementById('visible-citizen-ids').value = JSON.stringify(visibleCitizenIds);
+            if (reportType === 'none'){
+                document.getElementById('report_type').value = 'default';
+            }
+            else{
+                document.getElementById('report_type').value = reportType;
 
+            }
+
+        }
 
     </script>
 

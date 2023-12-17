@@ -1,7 +1,6 @@
 from openpyxl import Workbook
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
-import tempfile
 from django.db import connection
 from docx import  Document
 from .signals import my_signal
@@ -18,31 +17,28 @@ def index_page(request):
 # region report
 
 def export_visible_rows(request,report_type='default'):
-    if request.method == 'POST':
-        print('Received POST request')  # Отладочный вывод
 
-        visible_citizen_ids = request.POST.get('visible_citizen_ids')
-        print('Visible Citizen IDs:', visible_citizen_ids)  # Отладочный вывод
-
-        report_type = request.POST.get('report_type')
-        print('Report Type:', report_type)  # Отладочный вывод
+    if request.method == 'GET':
+        visible_citizen_ids = request.GET.get('visible_citizen_ids')
+        report_type = request.GET.get('report_type')
 
         visible_citizen_ids_list = json.loads(visible_citizen_ids)
         visible_citizen_ids_list = list(map(int, visible_citizen_ids_list))
         citizens = Citizen.objects.filter(id_citizen__in=visible_citizen_ids_list)
-        print(citizens)
+        print(visible_citizen_ids_list)
         if report_type == 'word':
             print('iam word')
             return generate_word_report(citizens)
 
         elif report_type == 'excel':
             print('iam excel')
-
             return generate_excel_report(citizens)
         else:
             return HttpResponse("Invalid report type")
 
-    return HttpResponse("GET request handled successfully")
+
+
+
 
 def report(request):
     citizens = Citizen.objects.all().order_by('id_citizen')
