@@ -179,7 +179,7 @@
 
                 <!-- Стилизованная кнопка "Сформировать отчет" с использованием Bootstrap  -->
                 <li style="margin-top: 15px;">
-                    <a href="{% url 'citizen_list' %}" class="btn btn-success">Сформировать отчет</a>
+                    <a href="{% url 'report' %}" class="btn btn-success">Сформировать отчет</a>
                 </li>
             </ul>
 
@@ -202,7 +202,7 @@
                 </thead>
                 <tbody>
                     {% for citizen in citizens %}
-                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ citizen.id_citizen }}">
+                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ citizen.citizen_id }}">
                         <td>{{ citizen.full_name }}</td>
                         <td>{{ citizen.passport_data }}</td>
                         <td>{{ citizen.phone_number }}</td>

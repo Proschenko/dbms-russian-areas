@@ -3,7 +3,12 @@ from . import views
 
 urlpatterns = [
     path('', views.index_page, name='index_page'),
-
+    # region report
+    path('report/', views.report,name='report'),
+    path('export_visible_rows/', views.export_visible_rows, name='export_visible_rows'),
+    path('generate_word_report/', views.generate_word_report, name='generate_word_report'),
+    path('generate_excel_report/', views.generate_excel_report, name='generate_excel_report'),
+    # endregion
     # region Area
     path('area_list/', views.table_area, name='area_list'),
     path('create_area/', views.create_area, name='create_area'),

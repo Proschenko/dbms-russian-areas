@@ -2,88 +2,444 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Генерация отчета</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Подключение jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f1f1f1;
             margin: 0;
             padding: 0;
+            position: relative;
         }
 
-        h2 {
-            color: #333;
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
             text-align: center;
         }
 
-        form {
-            max-width: 400px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        header img {
+            height: 30px;
+            margin-right: 10px;
         }
 
-        button {
+        main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+            margin-bottom: 40px; /* Высота футтера + дополнительный отступ */
+        }
+
+        .left-column {
+            width: 20%;
+            padding: 20px;
+            background-color: #f4f4f4;
+            position: fixed;
+            height: 100%;
+        }
+
+        .left-column h2 {
+            margin-bottom: 10px;
+        }
+
+        .left-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .left-column li a {
+            text-decoration: none;
+            color: #333;
+        }
+        @media (max-width: 768px) {
+            .left-column {
+                width: 100%;
+            }
+
+            .left-column ul {
+                text-align: center;
+            }
+
+            .left-column li {
+                display: block;
+                margin-bottom: 10px;
+            }
+        }
+
+        .left-column a.btn {
             background-color: #333;
             color: #fff;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-top: 10px;
         }
 
-        button:hover {
+        /* Изменение цвета фона при наведении */
+        .left-column a.btn:hover {
             background-color: #444;
         }
 
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 10px;
-            color: #007bff;
-            text-decoration: none;
+        /* Стилизация кнопки "Применить фильтры" */
+        button.btn.btn-primary {
+            background-color: #333;
+            color: #fff;
+            transition: background-color 0.3s;
         }
 
-        a:hover {
-            text-decoration: underline;
+        /* Изменение цвета фона при наведении */
+        button.btn.btn-primary:hover {
+            background-color: #444;
+        }
+
+        .right-column {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            margin-left: 20%; /* Учтите ширину левого столбца */
+        }
+
+        .right-column h2 {
+            margin-bottom: 10px;
+        }
+
+        .right-column h3 {
+            margin-bottom: 20px;
+        }
+
+        .right-column img {
+            max-width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        /* Добавленные стили для выделения строки при наведении */
+        .table-row:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
         }
     </style>
+    <title>Лабораторная работа №4</title>
 </head>
 <body>
-    <form id="reportForm" method="post" action="{% url 'generate_report' %}">
-        <h2>Генерация отчета</h2>
-        {% csrf_token %}
 
-        <!-- Кнопка для формирования отчета в формате Word -->
-        <button type="button" onclick="generateReport('word')">Сформировать в Word</button>
+    <header>
+        <a href="{% url 'index_page' %}">
+            <img src="https://klike.net/uploads/posts/2022-10/1666852935_3-56.jpg" alt="logo">
+        </a>
 
-        <!-- Кнопка для формирования отчета в формате Excel -->
-        <button type="button" onclick="generateReport('excel')">Сформировать в Excel</button>
+        <h1>Лабораторная работа №4</h1>
+    </header>
 
-        <a href="{% url 'citizen_list' %}">Отменить</a>
-    </form>
+    <main>
+        <div class="left-column">
+            <h2>Выберите таблицу</h2>
+            <ul>
+                <li><a href="{% url 'area_list' %}">Области</a></li>
+                <li><a href="{% url 'city_list' %}">Населенные пункты</a></li>
+                <li><a href="{% url 'district_list' %}">Районы</a></li>
+                <li><a href="{% url 'street_list' %}">Улицы</a></li>
+                <li><a href="{% url 'residentialbuilding_list' %}">Дома</a></li>
+                <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
+                <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
+
+
+                <!-- Поисковые поля -->
+
+                <form style="margin-top: 15px;" method="get" action="{% url 'citizen_list' %}">
+                    <input type="text" id="search_full_name" name="search_full_name" placeholder="Поиск по ФИО">
+                    <input type="text" id="search_passport_data" name="search_passport_data" placeholder="Поиск по паспортным данным">
+                    <input type="text" id="search_phone_number" name="search_phone_number" placeholder="Поиск по номеру телефона">
+                    <input type="text" id="search_apartment" name="search_apartment" placeholder="Поиск по номеру квартиры">
+                    <input type="text" id="search_street" name="search_street" placeholder="Поиск по улице">
+                    <input type="text" id="search_district" name="search_district" placeholder="Поиск по району">
+                    <input type="text" id="search_city" name="search_city" placeholder="Поиск по городу">
+                    <input type="text" id="search_area" name="search_area" placeholder="Поиск по области">
+
+                    <label for="start_date">Начальная дата:</label>
+                    <input type="date" id="start_date" name="start_date">
+
+                    <label for="end_date">Конечная дата:</label>
+                    <input type="date" id="end_date" name="end_date">
+
+                    <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterReportTable()">Применить фильтры</button>
+                </form>
+
+                <form action="">
+                    <button id="exportToWordBtn" style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="exportVisibleRows('word')">Экспорт в Word</button>
+                    <button id="exportToExcelBtn" style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="exportVisibleRows('excel')">Экспорт в Excel</button>
+
+                </form>
+
+
+            </ul>
+
+        </div>
+
+        <div class="right-column">
+            <h2>Таблица для отчета</h2>
+
+            <table id="reportTable" class="table">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)">ФИО</th>
+                        <th onclick="sortTable(1)">Паспортные данные</th>
+                        <th onclick="sortTable(2)">Номер телефона</th>
+                        <th onclick="sortTable(3)">Дата рождения</th>
+                        <th onclick="sortTable(4)">Пол</th>
+                        <th onclick="sortTable(5)">Квартира</th>
+                        <th onclick="sortTable(6)">Дом</th>
+                        <th onclick="sortTable(7)">Улица</th>
+                        <th onclick="sortTable(8)">Район</th>
+                        <th onclick="sortTable(9)">Город</th>
+                        <th onclick="sortTable(10)">Область</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for citizen in citizens %}
+                    <tr class="table-row" data-id="{{citizen.id_citizen}}">
+                        <td>{{ citizen.full_name }}</td>
+                        <td>{{ citizen.passport_data }}</td>
+                        <td>{{ citizen.phone_number }}</td>
+                        <td>{{ citizen.date_of_birth }}</td>
+                        <td>{% if citizen.gender %}Мужской{% else %}Женский{% endif %}</td>
+                        <td>{{ citizen.apartment.apartment_number}}</td>
+                        <td>{{ citizen.apartment.residential_building.house_number}}</td>
+                        <td>{{ citizen.apartment.residential_building.street.name_street}}</td>
+                        <td>{{ citizen.apartment.residential_building.street.district.name_district}}</td>
+                        <td>{{ citizen.apartment.residential_building.street.district.city.name_city}}</td>
+                        <td>{{ citizen.apartment.residential_building.street.district.city.area.name_area}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
 
     <script>
-        function generateReport(format) {
-            // Добавьте логику для формирования отчета с использованием JavaScript
-            // Здесь вы можете использовать AJAX-запрос для отправки выбранного формата на сервер
-            // и обработки генерации отчета на сервере.
-            // Пример использования библиотеки jQuery:
-            // $.post('{% url 'generate_report' %}', { format: format }, function(data) {
-            //     // Обработка ответа от сервера
-            // });
-
-            // Вместо AJAX-запроса, вы также можете просто отправить форму с параметром format,
-            // который будет обработан на сервере при отправке формы.
-            document.getElementById('reportForm').action += `?format=${format}`;
-            document.getElementById('reportForm').submit();
+        // Функция для получения CSRF-токена из cookie
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
     </script>
+    <script>
+        function exportVisibleRows(reportType) {
+            var table = document.getElementById('reportTable');
+            var rows = table.getElementsByClassName('table-row');
+            var visibleCitizenIds = [];
+
+            for (var i = 0; i < rows.length; i++) {
+                if (rows[i].style.display !== 'none') {
+                    var citizenId = rows[i].getAttribute('data-id');
+
+                    visibleCitizenIds.push(citizenId);
+                }
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/export_visible_rows/',
+                headers: { 'X-CSRFToken': csrftoken },
+                data: {
+                    'visible_citizen_ids': JSON.stringify(visibleCitizenIds),
+                    'report_type': reportType
+                },
+                success: function (data) {
+                    handleDownload(data, reportType);
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        function handleDownload(data, reportType) {
+            var blob = new Blob([data], { type: 'application/octet-stream' });
+            var link = document.createElement('a');
+
+            if (reportType === 'word') {
+                link.download = 'citizen_report.docx';
+            } else if (reportType === 'excel') {
+                link.download = 'citizen_report.xlsx';
+            }
+
+            link.href = window.URL.createObjectURL(blob);
+            link.click();
+        }
+
+
+    </script>
+
+    </main>
+    <div>\<br></div>
+
+
+
+    <script>
+        function parseDateFromString(dateString) {
+            // Разделите строку на части
+            var parts = dateString.split(' ');
+
+            // Преобразуйте месяц в числовой формат
+            var month = [
+                "января", "февраля", "марта", "апреля", "мая", "июня",
+                "июля", "августа", "сентября", "октября", "ноября", "декабря"
+            ].indexOf(parts[1]);
+
+            // Получите день, месяц и год
+            var day = parseInt(parts[0], 10);
+            var year = parseInt(parts[2], 10);
+
+            // Создайте объект Date
+            var dateObject = new Date(year, month, day);
+
+            return dateObject;
+        }
+
+        function sortTable(columnIndex) {
+            var table, rows, switching, i, x, y, shouldSwitch;
+            table = document.getElementById("reportTable");
+            switching = true;
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("td")[columnIndex];
+                    y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                }
+            }
+        }
+
+        function filterReportTable() {
+            // Получаем значения из элементов формы
+            var inputFullName = document.getElementById('search_full_name').value.toUpperCase();
+            var inputPassportData = document.getElementById('search_passport_data').value.toUpperCase();
+            var inputPhoneNumber = document.getElementById('search_phone_number').value.toUpperCase();
+            var inputApartment = document.getElementById('search_apartment').value.toUpperCase();
+            var inputStreet = document.getElementById('search_street').value.toUpperCase();
+            var inputDistrict = document.getElementById('search_district').value.toUpperCase();
+            var inputCity = document.getElementById('search_city').value.toUpperCase();
+            var inputArea = document.getElementById('search_area').value.toUpperCase();
+            var inputStartDate = document.getElementById('start_date').value;
+            var inputEndDate = document.getElementById('end_date').value;
+
+            // Преобразуем даты в объекты Date
+            var parsedStartDate = inputStartDate ? new Date(inputStartDate) : null;
+            var parsedEndDate = inputEndDate ? new Date(inputEndDate) : null;
+
+            var table = document.getElementById('reportTable');
+            var rows = table.getElementsByClassName('table-row');
+
+            for (var i = 0; i < rows.length; i++) {
+                var fullNameCol = rows[i].getElementsByTagName('td')[0];
+                var passportDataCol = rows[i].getElementsByTagName('td')[1];
+                var phoneNumberCol = rows[i].getElementsByTagName('td')[2];
+                var dateOfBirthCol = rows[i].getElementsByTagName('td')[3];
+                var genderCol = rows[i].getElementsByTagName('td')[4];
+                var apartmentCol = rows[i].getElementsByTagName('td')[5];
+                var houseCol = rows[i].getElementsByTagName('td')[6];
+                var streetCol = rows[i].getElementsByTagName('td')[7];
+                var districtCol = rows[i].getElementsByTagName('td')[8];
+                var cityCol = rows[i].getElementsByTagName('td')[9];
+                var areaCol = rows[i].getElementsByTagName('td')[10];
+
+                // Получаем значения из ячеек таблицы
+                var fullNameValue = fullNameCol.textContent || fullNameCol.innerText;
+                var passportDataValue = passportDataCol.textContent || passportDataCol.innerText;
+                var phoneNumberValue = phoneNumberCol.textContent || phoneNumberCol.innerText;
+                var dateOfBirthValue = dateOfBirthCol.textContent || dateOfBirthCol.innerText;
+                var genderValue = genderCol.textContent || genderCol.innerText;
+                var apartmentValue = apartmentCol.textContent || apartmentCol.innerText;
+                var houseValue = houseCol.textContent || houseCol.innerText;
+                var streetValue = streetCol.textContent || streetCol.innerText;
+                var districtValue = districtCol.textContent || districtCol.innerText;
+                var cityValue = cityCol.textContent || cityCol.innerText;
+                var areaValue = areaCol.textContent || areaCol.innerText;
+
+                // Преобразуем дату рождения в объект Date
+                var parsedDateOfBirth = parseDateFromString(dateOfBirthValue);
+
+                console.log(dateOfBirthValue)
+                console.log(parsedDateOfBirth)
+                // Условия фильтрации для каждой колонки
+                if (
+                    // Фильтры для всех остальных колонок (ФИО, паспорт, телефон, квартира и т.д.)
+                    (inputFullName === '' || fullNameValue.toUpperCase().indexOf(inputFullName) > -1) &&
+                    (inputPassportData === '' || passportDataValue.toUpperCase().indexOf(inputPassportData) > -1) &&
+                    (inputPhoneNumber === '' || phoneNumberValue.toUpperCase().indexOf(inputPhoneNumber) > -1) &&
+                    (inputApartment === '' || apartmentValue.toUpperCase().indexOf(inputApartment) > -1) &&
+                    (inputStreet === '' || streetValue.toUpperCase().indexOf(inputStreet) > -1) &&
+                    (inputDistrict === '' || districtValue.toUpperCase().indexOf(inputDistrict) > -1) &&
+                    (inputCity === '' || cityValue.toUpperCase().indexOf(inputCity) > -1) &&
+                    (inputArea === '' || areaValue.toUpperCase().indexOf(inputArea) > -1) &&
+                    // Фильтр для даты
+                    (inputStartDate === '' || (parsedDateOfBirth >= parsedStartDate)) &&
+                    (inputEndDate === '' || (parsedDateOfBirth <= parsedEndDate))
+                ) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+
+
+    </script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <!-- Подключение Bootstrap JS  -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
+
+
+
+
+
 </body>
 </html>

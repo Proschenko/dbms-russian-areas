@@ -92,6 +92,16 @@
             bottom: 0;
             width: 100%;
         }
+        button.btn.btn-success {
+            background-color: #333;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+
+        button.btn.btn-success:hover {
+            background-color: #444;
+        }
     </style>
     <title>Лабораторная работа №4</title>
 </head>
@@ -117,6 +127,11 @@
                 <li><a href="{% url 'residentialbuilding_list' %}">Дома</a></li>
                 <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
                 <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
+
+                <li style="margin-top: 200px;">
+                    <a href="{% url 'report' %}" class="btn btn-success">Сформировать отчет</a>
+                </li>
+
 
             </ul>
         </div>
