@@ -179,10 +179,10 @@
             <table id="apartmentTable" class="table">
                 <thead>
                     <tr>
-                        <th onclick="sortTable(0)">Номер квартиры</th>
-                        <th onclick="sortTable(1)">Количество комнат</th>
-                        <th onclick="sortTable(2)">Площадь</th>
-                        <th onclick="sortTable(3)">Дом</th>
+                        <th onclick="sortTable(0, 'num')">Номер квартиры</th>
+                        <th onclick="sortTable(1, 'num')">Количество комнат</th>
+                        <th onclick="sortTable(2), 'num'">Площадь</th>
+                        <th onclick="sortTable(3), 'string'">Дом</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -219,28 +219,68 @@
     </div>
 
     <script>
-        function sortTable(columnIndex) {
-            var table, rows, switching, i, x, y, shouldSwitch;
+        function sortTable(columnIndex, dataType) {
+            var table, rows, switching, i, x, y, shouldSwitch, sortDirection;
             table = document.getElementById("apartmentTable");
+
             switching = true;
+            sortDirection = "asc";
+
+            var currentSortDirection = table.getAttribute("data-sort-direction");
+            if (currentSortDirection && columnIndex == table.getAttribute("data-sort-column")) {
+                sortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+            }
+
+            table.setAttribute("data-sort-direction", sortDirection);
+            table.setAttribute("data-sort-column", columnIndex);
+
             while (switching) {
                 switching = false;
                 rows = table.rows;
+
                 for (i = 1; i < (rows.length - 1); i++) {
                     shouldSwitch = false;
                     x = rows[i].getElementsByTagName("td")[columnIndex];
                     y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+
+                    var xValue = x.innerHTML.trim();
+                    var yValue = y.innerHTML.trim();
+
+                    switch (dataType) {
+                        case "num":
+                            xValue = parseFloat(xValue);
+                            yValue = parseFloat(yValue);
+                            break;
+                        case "string":
+                        default:
+                            break;
+                    }
+
+                    if ((sortDirection === "asc" && xValue > yValue) || (sortDirection === "desc" && xValue < yValue)) {
                         shouldSwitch = true;
                         break;
                     }
                 }
+
                 if (shouldSwitch) {
                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                     switching = true;
                 }
             }
+
+            updateTableHeaders(table, columnIndex, sortDirection);
         }
+
+        function updateTableHeaders(table, columnIndex, sortDirection) {
+            var headerCells = table.querySelectorAll("thead th");
+            headerCells.forEach(function (cell) {
+                cell.innerHTML = cell.innerHTML.replace(" ↑", "").replace(" ↓", "");
+            });
+
+            var selectedHeader = headerCells[columnIndex];
+            selectedHeader.innerHTML += sortDirection === "asc" ? " ↑" : " ↓";
+        }
+
 
         function filterApartmentTable() {
             console.log("Filtering table...");

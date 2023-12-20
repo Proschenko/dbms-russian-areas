@@ -247,60 +247,59 @@
 
     <script>
         function parseDateFromString(dateString) {
-            // Разделите строку на части
             var parts = dateString.split(' ');
-
-            // Преобразуйте месяц в числовой формат
             var month = [
                 "января", "февраля", "марта", "апреля", "мая", "июня",
                 "июля", "августа", "сентября", "октября", "ноября", "декабря"
             ].indexOf(parts[1]);
-
-            // Получите день, месяц и год
             var day = parseInt(parts[0], 10);
             var year = parseInt(parts[2], 10);
-
-            // Создайте объект Date
             var dateObject = new Date(year, month, day);
-
             return dateObject;
         }
 
         function sortTable(columnIndex, dataType) {
-            var table, rows, switching, i, x, y, shouldSwitch;
+            var table, rows, switching, i, x, y, shouldSwitch, sortDirection;
             table = document.getElementById("reportTable");
+
             switching = true;
+            sortDirection = "asc";
+
+            var currentSortDirection = table.getAttribute("data-sort-direction");
+            if (currentSortDirection && columnIndex == table.getAttribute("data-sort-column")) {
+                sortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+            }
+
+            table.setAttribute("data-sort-direction", sortDirection);
+            table.setAttribute("data-sort-column", columnIndex);
+
             while (switching) {
                 switching = false;
                 rows = table.rows;
+
                 for (i = 1; i < (rows.length - 1); i++) {
                     shouldSwitch = false;
                     x = rows[i].getElementsByTagName("td")[columnIndex];
                     y = rows[i + 1].getElementsByTagName("td")[columnIndex];
 
-                    // Получаем значения из ячеек
                     var xValue = x.innerHTML.trim();
                     var yValue = y.innerHTML.trim();
-                    console.log(i, xValue,yValue)
-                    // Преобразуем значения в соответствии с типом данных
+
                     switch (dataType) {
-                        case 'num':
+                        case "num":
                             xValue = parseFloat(xValue);
                             yValue = parseFloat(yValue);
                             break;
-                        case 'date':
-
+                        case "date":
                             xValue = parseDateFromString(xValue);
                             yValue = parseDateFromString(yValue);
                             break;
-                        // По умолчанию считаем строки
-                        case 'string':
+                        case "string":
                         default:
                             break;
                     }
 
-                    // Сравниваем значения
-                    if (xValue > yValue) {
+                    if ((sortDirection === "asc" && xValue > yValue) || (sortDirection === "desc" && xValue < yValue)) {
                         shouldSwitch = true;
                         break;
                     }
@@ -311,7 +310,21 @@
                     switching = true;
                 }
             }
+
+            updateTableHeaders(table, columnIndex, sortDirection);
         }
+
+        function updateTableHeaders(table, columnIndex, sortDirection) {
+            var headerCells = table.querySelectorAll("thead th");
+            headerCells.forEach(function (cell) {
+                cell.innerHTML = cell.innerHTML.replace(" ↑", "").replace(" ↓", "");
+            });
+
+            var selectedHeader = headerCells[columnIndex];
+            selectedHeader.innerHTML += sortDirection === "asc" ? " ↑" : " ↓";
+        }
+
+
         function filterReportTable(reportType) {
             // Получаем значения из элементов формы
             var inputFullName = document.getElementById('search_full_name').value.toUpperCase();

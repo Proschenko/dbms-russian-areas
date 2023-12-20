@@ -225,12 +225,20 @@
 </div>
 
 <script>
-
     function sortTable(columnIndex, dataType) {
-        var table, rows, switching, i, x, y, shouldSwitch;
-
+        var table, rows, switching, i, x, y, shouldSwitch, sortDirection;
         table = document.getElementById("residentialbuildingTable");
+
         switching = true;
+        sortDirection = "asc";
+
+        var currentSortDirection = table.getAttribute("data-sort-direction");
+        if (currentSortDirection && columnIndex == table.getAttribute("data-sort-column")) {
+            sortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+        }
+
+        table.setAttribute("data-sort-direction", sortDirection);
+        table.setAttribute("data-sort-column", columnIndex);
 
         while (switching) {
             switching = false;
@@ -241,28 +249,20 @@
                 x = rows[i].getElementsByTagName("td")[columnIndex];
                 y = rows[i + 1].getElementsByTagName("td")[columnIndex];
 
-                // Получаем значения из ячеек
                 var xValue = x.innerHTML.trim();
                 var yValue = y.innerHTML.trim();
 
-                // Преобразуем значения в соответствии с типом данных
                 switch (dataType) {
                     case "num":
                         xValue = parseFloat(xValue);
                         yValue = parseFloat(yValue);
                         break;
-                    case "date":
-                        xValue = new Date(xValue);
-                        yValue = new Date(yValue);
-                        break;
-                    // По умолчанию считаем строки
                     case "string":
                     default:
                         break;
                 }
 
-                // Сравниваем значения
-                if (xValue > yValue) {
+                if ((sortDirection === "asc" && xValue > yValue) || (sortDirection === "desc" && xValue < yValue)) {
                     shouldSwitch = true;
                     break;
                 }
@@ -273,7 +273,20 @@
                 switching = true;
             }
         }
+
+        updateTableHeaders(table, columnIndex, sortDirection);
     }
+
+    function updateTableHeaders(table, columnIndex, sortDirection) {
+        var headerCells = table.querySelectorAll("thead th");
+        headerCells.forEach(function (cell) {
+            cell.innerHTML = cell.innerHTML.replace(" ↑", "").replace(" ↓", "");
+        });
+
+        var selectedHeader = headerCells[columnIndex];
+        selectedHeader.innerHTML += sortDirection === "asc" ? " ↑" : " ↓";
+    }
+
 
 
     function filterResidentialBuildingTable() {
