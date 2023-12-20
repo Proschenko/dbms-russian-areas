@@ -375,8 +375,7 @@
                 // Преобразуем дату рождения в объект Date
                 var parsedDateOfBirth = parseDateFromString(dateOfBirthValue);
 
-                console.log(dateOfBirthValue)
-                console.log(parsedDateOfBirth)
+
                 // Условия фильтрации для каждой колонки
                 if (
                     // Фильтры для всех остальных колонок (ФИО, паспорт, телефон, квартира и т.д.)
@@ -402,15 +401,34 @@
                 }
                 console.log(visibleCitizenIds)
             }
-            document.getElementById('visible-citizen-ids').value = JSON.stringify(visibleCitizenIds);
-            if (reportType === 'none'){
-                document.getElementById('report_type').value = 'default';
-            }
-            else{
-                document.getElementById('report_type').value = reportType;
 
-            }
+            var table = document.getElementById('reportTable');
+            var visibleRows = table.querySelectorAll('.table-row:not([style="display: none;"])');
 
+            // Disable export buttons if no visible rows
+            var exportToWordBtn = document.getElementById('exportToWordBtn');
+            var exportToExcelBtn = document.getElementById('exportToExcelBtn');
+
+            if (visibleRows.length === 0) {
+                exportToWordBtn.disabled = true;
+                exportToExcelBtn.disabled = true;
+                reportFlagToFile=false;
+
+                alert('Нет данных для экспорта, измените фильтры');
+            } else {
+                exportToWordBtn.disabled = false;
+                exportToExcelBtn.disabled = false;
+                reportFlagToFile=true;
+            }
+            if (reportFlagToFile){
+                document.getElementById('visible-citizen-ids').value = JSON.stringify(visibleCitizenIds);
+                if (reportType === 'none'){
+                    document.getElementById('report_type').value = 'default';
+                }
+                else{
+                    document.getElementById('report_type').value = reportType;
+                }
+            }
         }
 
     </script>
