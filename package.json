@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "docx": "^8.2.4",
-    "exceljs": "^4.4.0",
-    "jquery": "^3.7.1"
-  }
-}
