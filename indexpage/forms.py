@@ -46,7 +46,7 @@ class StreetForm(forms.ModelForm):
 
 class ResidentialBuildingForm(forms.ModelForm):
 
-    def clean_area(self):
+    def clean_year_of_construction(self):
         year_of_construction = self.cleaned_data['year_of_construction']
         if year_of_construction < 1800:
             raise ValidationError(_('Дом не может быть построен ранее 1800 года'))
