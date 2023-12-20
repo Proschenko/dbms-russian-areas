@@ -206,17 +206,17 @@
             <table id="reportTable" class="table">
                 <thead>
                     <tr>
-                        <th onclick="sortTable(0)">ФИО</th>
-                        <th onclick="sortTable(1)">Паспортные данные</th>
-                        <th onclick="sortTable(2)">Номер телефона</th>
-                        <th onclick="sortTable(3)">Дата рождения</th>
-                        <th onclick="sortTable(4)">Пол</th>
-                        <th onclick="sortTable(5)">Квартира</th>
-                        <th onclick="sortTable(6)">Дом</th>
-                        <th onclick="sortTable(7)">Улица</th>
-                        <th onclick="sortTable(8)">Район</th>
-                        <th onclick="sortTable(9)">Город</th>
-                        <th onclick="sortTable(10)">Область</th>
+                        <th onclick="sortTable(0, 'string')">ФИО</th>
+                        <th onclick="sortTable(1, 'num')">Паспортные данные</th>
+                        <th onclick="sortTable(2, 'num')">Номер телефона</th>
+                        <th onclick="sortTable(3, 'date')">Дата рождения</th>
+                        <th onclick="sortTable(4, 'string')">Пол</th>
+                        <th onclick="sortTable(5, 'num')">Квартира</th>
+                        <th onclick="sortTable(6, 'num')">Дом</th>
+                        <th onclick="sortTable(7, 'string')">Улица</th>
+                        <th onclick="sortTable(8, 'string')">Район</th>
+                        <th onclick="sortTable(9, 'string')">Город</th>
+                        <th onclick="sortTable(10, 'string')">Область</th>
 
                     </tr>
                 </thead>
@@ -266,7 +266,7 @@
             return dateObject;
         }
 
-        function sortTable(columnIndex) {
+        function sortTable(columnIndex, dataType) {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("reportTable");
             switching = true;
@@ -277,18 +277,41 @@
                     shouldSwitch = false;
                     x = rows[i].getElementsByTagName("td")[columnIndex];
                     y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+
+                    // Получаем значения из ячеек
+                    var xValue = x.innerHTML.trim();
+                    var yValue = y.innerHTML.trim();
+                    console.log(i, xValue,yValue)
+                    // Преобразуем значения в соответствии с типом данных
+                    switch (dataType) {
+                        case 'num':
+                            xValue = parseFloat(xValue);
+                            yValue = parseFloat(yValue);
+                            break;
+                        case 'date':
+
+                            xValue = parseDateFromString(xValue);
+                            yValue = parseDateFromString(yValue);
+                            break;
+                        // По умолчанию считаем строки
+                        case 'string':
+                        default:
+                            break;
+                    }
+
+                    // Сравниваем значения
+                    if (xValue > yValue) {
                         shouldSwitch = true;
                         break;
                     }
                 }
+
                 if (shouldSwitch) {
                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                     switching = true;
                 }
             }
         }
-
         function filterReportTable(reportType) {
             // Получаем значения из элементов формы
             var inputFullName = document.getElementById('search_full_name').value.toUpperCase();

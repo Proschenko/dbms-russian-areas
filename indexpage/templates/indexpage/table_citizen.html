@@ -173,6 +173,11 @@
                     <input type="text" id="search_passport_data" name="search_passport_data" placeholder="Поиск по паспортным данным">
                     <input type="text" id="search_phone_number" name="search_phone_number" placeholder="Поиск по номеру телефона">
                     <input type="text" id="search_apartment" name="search_apartment" placeholder="Поиск по номеру квартиры">
+                    <label for="start_date">Начальная дата:</label>
+                    <input type="date" id="start_date" name="start_date">
+
+                    <label for="end_date">Конечная дата:</label>
+                    <input type="date" id="end_date" name="end_date">
                     <button style="margin-top: 5px;" class="btn btn-primary" type="button" onclick="filterCitizenTable()">Применить фильтры</button>
                 </form>
 
@@ -192,13 +197,12 @@
             <table id="citizenTable" class="table">
                 <thead>
                     <tr>
-
-                        <th onclick="sortTable(0)">ФИО</th>
-                        <th onclick="sortTable(1)">Паспортные данные</th>
-                        <th onclick="sortTable(2)">Номер телефона</th>
-                        <th onclick="sortTable(3)">Дата рождения</th>
-                        <th onclick="sortTable(4)">Пол</th>
-                        <th onclick="sortTable(5)">Квартира</th>
+                        <th onclick="sortTable(0, 'string')">ФИО</th>
+                        <th onclick="sortTable(1, 'string')">Паспортные данные</th>
+                        <th onclick="sortTable(2, 'string')">Номер телефона</th>
+                        <th onclick="sortTable(3, 'date')">Дата рождения</th>
+                        <th onclick="sortTable(4, 'string')">Пол</th>
+                        <th onclick="sortTable(5, 'string')">Квартира</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -243,7 +247,27 @@
     </div>
 
     <script>
-        function sortTable(columnIndex) {
+        function parseDateFromString(dateString) {
+            // Разделите строку на части
+            var parts = dateString.split(' ');
+
+            // Преобразуйте месяц в числовой формат
+            var month = [
+                "января", "февраля", "марта", "апреля", "мая", "июня",
+                "июля", "августа", "сентября", "октября", "ноября", "декабря"
+            ].indexOf(parts[1]);
+
+            // Получите день, месяц и год
+            var day = parseInt(parts[0], 10);
+            var year = parseInt(parts[2], 10);
+
+            // Создайте объект Date
+            var dateObject = new Date(year, month, day);
+
+            return dateObject;
+        }
+
+        function sortTable(columnIndex, dataType) {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("citizenTable");
             switching = true;
@@ -254,17 +278,42 @@
                     shouldSwitch = false;
                     x = rows[i].getElementsByTagName("td")[columnIndex];
                     y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+
+                    // Получаем значения из ячеек
+                    var xValue = x.innerHTML.trim();
+                    var yValue = y.innerHTML.trim();
+                    console.log(i, xValue,yValue)
+                    // Преобразуем значения в соответствии с типом данных
+                    switch (dataType) {
+                        case 'num':
+                            xValue = parseFloat(xValue);
+                            yValue = parseFloat(yValue);
+                            break;
+                        case 'date':
+
+                            xValue = parseDateFromString(xValue);
+                            yValue = parseDateFromString(yValue);
+                            break;
+                        // По умолчанию считаем строки
+                        case 'string':
+                        default:
+                            break;
+                    }
+
+                    // Сравниваем значения
+                    if (xValue > yValue) {
                         shouldSwitch = true;
                         break;
                     }
                 }
+
                 if (shouldSwitch) {
                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                     switching = true;
                 }
             }
         }
+
 
         function filterCitizenTable() {
             console.log("Filtering table...")
@@ -274,6 +323,13 @@
             var inputApartment = document.getElementById('search_apartment').value.toUpperCase();
             var table = document.getElementById('citizenTable');
             var rows = table.getElementsByClassName('table-row');
+            var inputStartDate = document.getElementById('start_date').value;
+            var inputEndDate = document.getElementById('end_date').value;
+
+            // Преобразуем даты в объекты Date
+            var parsedStartDate = inputStartDate ? new Date(inputStartDate) : null;
+            var parsedEndDate = inputEndDate ? new Date(inputEndDate) : null;
+
 
             for (var i = 0; i < rows.length; i++) {
                 var fullNameCol = rows[i].getElementsByTagName('td')[0];
@@ -291,11 +347,19 @@
                     var genderValue = genderCol.textContent || genderCol.innerText;
                     var apartmentValue = apartmentCol.textContent || apartmentCol.innerText;
 
+                     // Преобразуем дату рождения в объект Date
+                    var parsedDateOfBirth = parseDateFromString(dateOfBirthValue);
+
+                    console.log(dateOfBirthValue)
+                    console.log(parsedDateOfBirth)
                     if (
                         (inputFullName === '' || fullNameValue.toUpperCase().indexOf(inputFullName) > -1) &&
                         (inputPassportData === '' || passportDataValue.toUpperCase().indexOf(inputPassportData) > -1) &&
                         (inputPhoneNumber === '' || phoneNumberValue.toUpperCase().indexOf(inputPhoneNumber) > -1) &&
-                        (inputApartment === '' || apartmentValue.toUpperCase().indexOf(inputApartment) > -1)
+                        (inputApartment === '' || apartmentValue.toUpperCase().indexOf(inputApartment) > -1) &&
+                            // Фильтр для даты
+                        (inputStartDate === '' || (parsedDateOfBirth >= parsedStartDate)) &&
+                        (inputEndDate === '' || (parsedDateOfBirth <= parsedEndDate))
                     ) {
                         rows[i].style.display = '';
                     } else {

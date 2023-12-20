@@ -191,8 +191,8 @@
             <table id="areaTable" class="table">
                 <thead>
                     <tr>
-                        <th onclick="sortTable(0)">Название области</th>
-                        <th onclick="sortTable(1)">Код региона</th>
+                        <th onclick="sortTable(0, 'string')">Название области</th>
+                        <th onclick="sortTable(1, 'num')">Код региона</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -232,28 +232,55 @@
 
 
     <script>
-        function sortTable(columnIndex) {
+        function sortTable(columnIndex, dataType) {
             var table, rows, switching, i, x, y, shouldSwitch;
             table = document.getElementById("areaTable");
             switching = true;
+
             while (switching) {
                 switching = false;
                 rows = table.rows;
+                console.log(rows)
                 for (i = 1; i < (rows.length - 1); i++) {
                     shouldSwitch = false;
                     x = rows[i].getElementsByTagName("td")[columnIndex];
                     y = rows[i + 1].getElementsByTagName("td")[columnIndex];
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+
+                    // Получаем значения из ячеек
+                    var xValue = x.innerHTML.trim();
+                    var yValue = y.innerHTML.trim();
+
+                    // Преобразуем значения в соответствии с типом данных
+                    switch (dataType) {
+                        case 'num':
+                            xValue = parseFloat(xValue);
+                            yValue = parseFloat(yValue);
+                            break;
+                        case 'date':
+                            xValue = new Date(xValue);
+                            yValue = new Date(yValue);
+                            break;
+                        // По умолчанию считаем строки
+                        case 'string':
+                        default:
+                            break;
+                    }
+
+                    // Сравниваем значения
+                    if (xValue > yValue) {
                         shouldSwitch = true;
                         break;
                     }
                 }
+
                 if (shouldSwitch) {
                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                     switching = true;
                 }
             }
         }
+
+
 
         function filterAreaTable() {
             console.log("Filtering table...")
