@@ -27,11 +27,9 @@ def export_visible_rows(request,report_type='default'):
         citizens = Citizen.objects.filter(id_citizen__in=visible_citizen_ids_list)
         print(visible_citizen_ids_list)
         if report_type == 'word':
-            print('iam word')
             return generate_word_report(citizens)
 
         elif report_type == 'excel':
-            print('iam excel')
             return generate_excel_report(citizens)
         else:
             return HttpResponse("Invalid report type")

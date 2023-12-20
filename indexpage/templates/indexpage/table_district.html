@@ -161,7 +161,7 @@
             <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
             <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
 
-            <li style="margin-top: 150px;"><a href="{% url 'create_district' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+            <li style="margin-top: 100px;"><a href="{% url 'create_district' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
 
             <form style="margin-top: 15px;" method="get" action="{% url 'district_list' %}">
                 <input type="text" id="search_name_district" name="search_name_district" placeholder="Поиск по названию">
@@ -294,9 +294,11 @@
     });
 </script>
 
-<footer>
-    <p>by Прощенко Алексей и Фридрих Александр</p>
-</footer>
+    <div>
+        <footer>
+            <p>by Прощенко Алексей и Фридрих Александр</p>
+        </footer>
+    </div>
 
 </body>
 </html>

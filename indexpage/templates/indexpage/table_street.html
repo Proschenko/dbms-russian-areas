@@ -161,7 +161,7 @@
             <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
             <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
 
-            <li style="margin-top: 150px;"><a href="{% url 'create_street' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+            <li style="margin-top: 100px;"><a href="{% url 'create_street' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
 
             <form style="margin-top: 15px;" method="get" action="{% url 'street_list' %}">
                 <input type="text" id="search_name_street" name="search_name_street" placeholder="Поиск по названию">
@@ -198,7 +198,7 @@
     </div>
 </main>
 
-<div>\<br></div>
+
 
 <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="actionModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -293,9 +293,12 @@
     });
 </script>
 
-<footer>
-    <p>by Прощенко Алексей и Фридрих Александр</p>
-</footer>
+    <div>\<br></div>
+    <div>
+        <footer>
+            <p>by Прощенко Алексей и Фридрих Александр</p>
+        </footer>
+    </div>
 
 </body>
 </html>

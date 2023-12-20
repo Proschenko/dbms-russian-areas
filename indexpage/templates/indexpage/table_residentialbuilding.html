@@ -161,7 +161,7 @@
             <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
             <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
 
-            <li style="margin-top: 150px;"><a href="{% url 'create_residentialbuilding' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+            <li style="margin-top: 100px;"><a href="{% url 'create_residentialbuilding' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
 
             <form style="margin-top: 15px;" method="get" action="{% url 'residentialbuilding_list' %}">
                 <input type="text" id="search_house_number" name="search_house_number" placeholder="Поиск по номеру дома">
@@ -309,9 +309,11 @@
     });
 </script>
 
-<footer>
-    <p>by Прощенко Алексей и Фридрих Александр</p>
-</footer>
+    <div>
+        <footer>
+            <p>by Прощенко Алексей и Фридрих Александр</p>
+        </footer>
+    </div>
 
 </body>
 </html>

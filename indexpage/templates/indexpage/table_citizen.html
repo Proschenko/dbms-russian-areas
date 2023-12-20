@@ -165,7 +165,7 @@
                 <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
                 <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
 
-                <li style="margin-top: 150px;"><a href="{% url 'create_citizen' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+                <li style="margin-top: 100px;"><a href="{% url 'create_citizen' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
 
                 <!-- Поисковые поля -->
                 <form style="margin-top: 15px;" method="get" action="{% url 'citizen_list' %}">
@@ -192,6 +192,7 @@
             <table id="citizenTable" class="table">
                 <thead>
                     <tr>
+
                         <th onclick="sortTable(0)">ФИО</th>
                         <th onclick="sortTable(1)">Паспортные данные</th>
                         <th onclick="sortTable(2)">Номер телефона</th>
@@ -202,13 +203,15 @@
                 </thead>
                 <tbody>
                     {% for citizen in citizens %}
-                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ citizen.citizen_id }}">
+                    <tr class="table-row" data-toggle="modal" data-target="#actionModal" data-id="{{ citizen.id_citizen }}">
+
                         <td>{{ citizen.full_name }}</td>
                         <td>{{ citizen.passport_data }}</td>
                         <td>{{ citizen.phone_number }}</td>
                         <td>{{ citizen.date_of_birth }}</td>
                         <td>{% if citizen.gender %}Мужской{% else %}Женский{% endif %}</td>
                         <td>{{ citizen.apartment}}</td>
+
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -332,9 +335,11 @@
         });
     </script>
 
-    <footer>
-        <p>by Прощенко Алексей и Фридрих Александр</p>
-    </footer>
+    <div>
+        <footer>
+            <p>by Прощенко Алексей и Фридрих Александр</p>
+        </footer>
+    </div>
 
 </body>
 </html>

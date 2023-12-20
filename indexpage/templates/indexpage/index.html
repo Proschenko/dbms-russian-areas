@@ -8,7 +8,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            position: relative; /* Добавлено свойство position */
+            position: relative;
         }
 
         header {
@@ -19,19 +19,22 @@
         }
 
         header img {
-            height: 30px; /* Высота вашего логотипа */
+            height: 30px;
             margin-right: 10px;
         }
 
         main {
             display: flex;
-            min-height: calc(100vh - 60px); /* Высота экрана минус высота header */
+            min-height: calc(100vh - 60px);
+            margin-bottom: 40px; /* Высота футтера + дополнительный отступ */
         }
 
         .left-column {
-            width: 20%; /* Ширина левой колонки */
+            width: 20%;
             padding: 20px;
             background-color: #f4f4f4;
+            position: fixed;
+            height: 100%;
         }
 
         .left-column h2 {
@@ -48,11 +51,49 @@
             text-decoration: none;
             color: #333;
         }
+        @media (max-width: 768px) {
+            .left-column {
+                width: 100%;
+            }
+
+            .left-column ul {
+                text-align: center;
+            }
+
+            .left-column li {
+                display: block;
+                margin-bottom: 10px;
+            }
+        }
+
+
+        .left-column a.btn {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Изменение цвета фона при наведении */
+        .left-column a.btn:hover {
+            background-color: #444;
+        }
+
+        /* Стилизация кнопки "Применить фильтры" */
+        button.btn.btn-primary {
+            background-color: #333;  /* Цвет шапки и футтера, замените при необходимости */
+            color: #fff;  /* Цвет текста на кнопке, выберите подходящий */
+            transition: background-color 0.3s;  /* Плавное изменение цвета при наведении */
+        }
+
+        /* Изменение цвета фона при наведении */
+        button.btn.btn-primary:hover {
+            background-color: #444;  /* Цвет при наведении, замените при необходимости */
+        }
 
         .right-column {
-            flex: 1; /* Занимает все доступное пространство в правой колонке */
+            flex: 1;
             padding: 20px;
             text-align: center;
+            margin-left: 20%; /* Учтите ширину левого столбца */
         }
 
         .right-column h2 {
@@ -64,7 +105,7 @@
         }
 
         .right-column img {
-            max-width: 100%; /* Делаем изображение адаптивным */
+            max-width: 100%;
         }
 
         table {
@@ -72,6 +113,13 @@
             border-collapse: collapse;
             margin-top: 20px;
         }
+
+        /* Добавленные стили для выделения строки при наведении */
+        .table-row:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+
 
         th, td {
             border: 1px solid #ddd;
@@ -92,18 +140,11 @@
             bottom: 0;
             width: 100%;
         }
-        button.btn.btn-success {
-            background-color: #333;
-            color: #fff;
-            transition: background-color 0.3s;
-        }
-
-
-        button.btn.btn-success:hover {
-            background-color: #444;
-        }
     </style>
     <title>Лабораторная работа №4</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+
 </head>
 <body>
 
@@ -118,7 +159,6 @@
     <main>
         <div class="left-column">
             <h2>Выберите таблицу</h2>
-            <!-- исправить ссылки на верные после их создания -->
             <ul>
                 <li><a href="{% url 'area_list' %}">Области</a></li>
                 <li><a href="{% url 'city_list' %}">Населенные пункты</a></li>
@@ -128,12 +168,12 @@
                 <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
                 <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
 
-                <li style="margin-top: 200px;">
+                <li style="margin-top: 150px;">
                     <a href="{% url 'report' %}" class="btn btn-success">Сформировать отчет</a>
                 </li>
-
-
             </ul>
+
+            <!-- Добавьте поисковые поля, если необходимо -->
         </div>
 
         <div class="right-column">
@@ -146,6 +186,8 @@
         </div>
     </main>
 
+
+    <div><br></div>
     <footer>
         <p>by Прощенко Алексей и Фридрих Александр</p>
     </footer>

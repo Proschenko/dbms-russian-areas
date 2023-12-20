@@ -160,7 +160,7 @@
                 <li><a href="{% url 'apartment_list' %}">Квартиры</a></li>
                 <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
 
-                <li style="margin-top: 150px;"><a href="{% url 'create_apartment' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+                <li style="margin-top: 100px;"><a href="{% url 'create_apartment' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
                 <form style="margin-top: 15px;" method="get" action="{% url 'apartment_list' %}">
                     <input type="text" id="search_apartment_number" name="search_apartment_number" placeholder="Поиск по номеру квартиры">
                     <input type="text" id="search_num_of_rooms" name="search_num_of_rooms" placeholder="Поиск по количеству комнат">

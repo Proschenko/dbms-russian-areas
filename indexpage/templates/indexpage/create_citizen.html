@@ -64,6 +64,7 @@
 <body>
 <form method="post" action="">
     <h1>Добавить жителя</h1>
+
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Создать</button>

@@ -69,7 +69,7 @@ class Apartment(models.Model):
                                              db_constraint=False)
 
     def __str__(self):
-        return f"{self.apartment_number}, {self.residential_building.street.name_street}, {str(self.residential_building.house_number)},{self.residential_building.street.district.city.name_city}"
+        return f"{self.apartment_number}, {self.residential_building.street.name_street} {str(self.residential_building.house_number)},{self.residential_building.street.district.city.name_city}"
 
 
 class Citizen(models.Model):

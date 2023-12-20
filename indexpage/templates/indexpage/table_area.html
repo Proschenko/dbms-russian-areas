@@ -157,7 +157,6 @@
     <main>
         <div class="left-column">
             <h2>Выберите таблицу</h2>
-            <!-- исправить ссылки на верные после их создания -->
             <ul>
                 <li><a href="{% url 'area_list' %}">Области</a></li>
                 <li><a href="{% url 'city_list' %}">Населенные пункты</a></li>
@@ -168,7 +167,7 @@
                 <li><a href="{% url 'citizen_list' %}">Жильцы</a></li>
 
 
-                <li style="margin-top: 150px;"><a href="{% url 'create_area' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
+                <li style="margin-top: 100px;"><a href="{% url 'create_area' %}" class="btn btn-primary mb-2">Создать новый объект</a></li>
 
                 <!-- Поисковые поля -->
                 <form style="margin-top: 15px;" method="get" action="{% url 'area_list' %}">
@@ -313,10 +312,12 @@
         });
     </script>
 
+    <div>
+        <footer>
+            <p>by Прощенко Алексей и Фридрих Александр</p>
+        </footer>
+    </div>
 
-    <footer>
-        <p>by Прощенко Алексей и Фридрих Александр</p>
-    </footer>
 
 </body>
 </html>
